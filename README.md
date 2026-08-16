@@ -161,7 +161,7 @@ Em desenvolvimento, edite `BarberShopAgenda.API/appsettings.Development.json`:
 }
 ```
 
-> Em produção (Azure), a connection string é lida da variável de ambiente `BARBERSHOP_CONNECTION_STRING` (tem prioridade sobre o `appsettings.json`) — veja [DEPLOY_AZURE.md](DEPLOY_AZURE.md).
+> Em produção, a connection string é lida da variável de ambiente `BARBERSHOP_CONNECTION_STRING` (tem prioridade sobre o `appsettings.json`) — veja a seção [Deploy](#deploy).
 
 Alternativa mais segura em desenvolvimento, com [user-secrets](https://learn.microsoft.com/aspnet/core/security/app-secrets):
 ```bash
@@ -272,11 +272,11 @@ BarberShopAgenda/
 │   ├── minha-conta.html             Histórico de agendamentos (Cliente autenticado)
 │   ├── trocar-senha.html            Troca de senha (qualquer papel autenticado)
 │   ├── css/                         style.css (tema/base) + agendar.css (fluxo do cliente)
-│   └── js/                          api.js (fetch), auth.js (sessão/JWT) + 1 script por página
+│   └── js/                          config.js (URL da API) + api.js (fetch) + auth.js (sessão/JWT) + 1 script por página
 ├── database/schema.sql              Script SQL de criação e seeds (alternativa às migrations)
 ├── Dockerfile                       Build multi-stage da API
 ├── docker-compose.yml               Orquestração API + MySQL
-├── DEPLOY_AZURE.md                  Passo a passo de deploy no Azure
+├── .github/workflows/deploy-pages.yml  Publica frontend/ no GitHub Pages a cada push
 ├── .dockerignore
 ├── .gitignore
 └── README.md                        Este arquivo
@@ -313,14 +313,14 @@ Em produção, defina a chave de assinatura do JWT via variável de ambiente `BA
 
 A API envia e-mails automaticamente (confirmação de agendamento com código, verificação de conta, redefinição de senha) via SMTP — sem custo, usando qualquer provedor. Se o SMTP não estiver configurado, tudo continua funcionando normalmente, só não envia o e-mail (fica um aviso no log).
 
-Recomendado: [Brevo](https://www.brevo.com/) (ex-Sendinblue), plano gratuito com 300 e-mails/dia. Depois de criar a conta, pegue as credenciais em *Configurações → SMTP & API* e configure em `appsettings.Development.json` (ou variáveis de ambiente em produção):
+Em uso: SMTP do Gmail (conta `barbershopagenda90@gmail.com`, com senha de app — exige verificação em duas etapas ativada na conta). Configurado em `appsettings.json`/`appsettings.Development.json`:
 
 ```json
 "Smtp": {
-  "Host": "smtp-relay.brevo.com",
+  "Host": "smtp.gmail.com",
   "Port": 587,
-  "Usuario": "seu-usuario-smtp@smtp-brevo.com",
-  "RemetenteEmail": "contato@suabarbearia.com",
+  "Usuario": "barbershopagenda90@gmail.com",
+  "RemetenteEmail": "barbershopagenda90@gmail.com",
   "RemetenteNome": "BarberShop Agenda"
 },
 "Frontend": {
@@ -372,13 +372,21 @@ Recomendado: [Brevo](https://www.brevo.com/) (ex-Sendinblue), plano gratuito com
 
 ---
 
-## ☁️ Deploy no Azure
+## ☁️ Deploy
 
-Consulte [DEPLOY_AZURE.md](DEPLOY_AZURE.md) para o passo a passo completo: Azure App Service (camada gratuita) para a API, Azure Database for MySQL Flexible Server para o banco, e Azure Static Web Apps para o frontend.
+- **API:** [Render](https://render.com) (Web Service, camada gratuita, build via `Dockerfile`) — https://pji240-a2026s2n3-grupo12-barbershopagenda.onrender.com
+- **Banco de Dados:** [Aiven](https://aiven.io) (MySQL, camada always-free)
+- **Frontend:** [GitHub Pages](https://pages.github.com) (publicado automaticamente a cada push em `frontend/**` via `.github/workflows/deploy-pages.yml`) — https://guilherme-benfica.github.io/PJI240-A2026S2N3-Grupo12-BarberShopAgenda/
 
-- **API:** Azure App Service (Free Tier)
-- **Banco de Dados:** Azure Database for MySQL Flexible Server
-- **URL de produção:** *(a definir após o deploy)*
+Variáveis de ambiente configuradas no Render (nunca commitadas):
+
+| Variável | Descrição |
+|---|---|
+| `BARBERSHOP_CONNECTION_STRING` | Connection string do MySQL (Aiven), com `SslMode=Required` |
+| `BARBERSHOP_JWT_KEY` | Chave de assinatura dos tokens JWT em produção |
+| `BARBERSHOP_SMTP_SENHA` | Senha de app da conta de e-mail transacional |
+
+> A instância gratuita do Render "dorme" após 15 minutos de inatividade — a primeira requisição depois disso pode levar até ~50s pra responder.
 
 ---
 

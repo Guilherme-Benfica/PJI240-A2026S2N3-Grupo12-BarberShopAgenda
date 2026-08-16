@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop Agenda — Minha conta</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/agendar.css" />
+</head>
+<body>
+  <a href="#conteudo-principal" class="pular-para-conteudo">Pular para o conteúdo principal</a>
+
+  <header class="cabecalho">
+    <a href="agendar.html" class="logo" aria-label="BarberShop Agenda, página inicial">Barber<span>Shop</span> Agenda</a>
+    <nav class="navegacao" aria-label="Navegação principal">
+      <a href="agendar.html">Agendar horário</a>
+    </nav>
+  </header>
+
+  <main id="conteudo-principal">
+    <h1>Meus agendamentos</h1>
+    <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+
+    <div id="lista-agendamentos"></div>
+  </main>
+
+  <footer class="rodape">BarberShop Agenda &mdash; sistema de agendamento para barbearias</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/minha-conta.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop Agenda — Agendar horário</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/agendar.css" />
+</head>
+<body class="pagina-agendar">
+  <a href="#conteudo-principal" class="pular-para-conteudo">Pular para o conteúdo principal</a>
+
+  <header class="topo-agendar">
+    <div class="topo-agendar-faixa" aria-hidden="true"></div>
+    <div class="topo-agendar-conteudo">
+      <div class="topo-agendar-links">
+        <a href="meus-agendamentos.html" class="topo-agendar-login">Meus agendamentos</a>
+        <a href="login.html" class="topo-agendar-login">Sou barbeiro / admin</a>
+      </div>
+      <p class="topo-agendar-eyebrow">Agendamento online</p>
+      <h1 class="topo-agendar-titulo">Barber<span>Shop</span> Agenda</h1>
+      <p class="topo-agendar-subtitulo">Escolha o serviço, o profissional e o horário. Sem cadastro, sem espera.</p>
+    </div>
+  </header>
+
+  <div id="feedback" class="feedback feedback-flutuante" role="status" aria-live="polite"></div>
+
+  <main id="conteudo-principal">
+    <ol class="indicador-etapas" id="indicador-etapas" aria-label="Etapas do agendamento">
+      <li data-etapa="1" class="etapa-ativa" aria-current="step"><span class="etapa-numero">1</span>Serviço</li>
+      <li data-etapa="2"><span class="etapa-numero">2</span>Data e horário</li>
+      <li data-etapa="3"><span class="etapa-numero">3</span>Confirmação</li>
+    </ol>
+
+    <section class="secao-agendar" id="etapa-servicos" aria-labelledby="titulo-servicos">
+      <h2 id="titulo-servicos">Qual serviço você quer marcar?</h2>
+
+      <div class="campo-busca">
+        <svg aria-hidden="true" viewBox="0 0 24 24" class="icone-busca"><path fill="currentColor" d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42-1.39ZM11 18a7 7 0 1 1 7-7 7 7 0 0 1-7 7Z"/></svg>
+        <label for="busca-servico" class="sr-only">Pesquisar serviço</label>
+        <input type="search" id="busca-servico" placeholder="Pesquisar serviço…" autocomplete="off" />
+      </div>
+
+      <div id="lista-servicos" class="lista-servicos">
+        <p class="carregando">Carregando serviços…</p>
+      </div>
+    </section>
+
+    <section class="secao-agendar" id="etapa-horario" aria-labelledby="titulo-horario" hidden>
+      <div class="resumo-servico-escolhido" id="resumo-servico-escolhido"></div>
+
+      <h2 id="titulo-horario">Quando você quer vir?</h2>
+
+      <div class="tira-datas" id="tira-datas" role="group" aria-label="Escolha a data"></div>
+
+      <h3 class="subtitulo-secao">Selecione o profissional</h3>
+      <div class="tira-profissionais" id="tira-profissionais" role="group" aria-label="Escolha o profissional"></div>
+
+      <div id="bloco-horarios" class="bloco-horarios" aria-live="polite">
+        <p class="dica-horarios">Escolha um profissional para ver os horários disponíveis.</p>
+      </div>
+    </section>
+
+    <section class="secao-agendar" id="etapa-sucesso" aria-labelledby="titulo-sucesso" hidden>
+      <div class="cartao-sucesso" role="status">
+        <div class="icone-sucesso" aria-hidden="true">✓</div>
+        <h2 id="titulo-sucesso">Agendamento confirmado!</h2>
+        <p id="resumo-sucesso" class="texto-suave"></p>
+        <p class="rotulo-codigo">Guarde seu código de confirmação</p>
+        <p class="codigo-confirmacao" id="codigo-confirmacao"></p>
+        <p class="texto-suave texto-ajuda">Esse código também funciona como senha para consultar seus agendamentos depois, em <a href="meus-agendamentos.html">Meus agendamentos</a>.</p>
+        <button type="button" id="botao-novo-agendamento" class="botao-primario">Agendar outro horário</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">BarberShop Agenda &mdash; sistema de agendamento para barbearias</footer>
+
+  <!-- Bottom sheet de confirmação -->
+  <div class="sheet-fundo" id="sheet-fundo" hidden></div>
+  <div class="sheet-confirmacao" id="sheet-confirmacao" role="dialog" aria-modal="true" aria-labelledby="titulo-sheet" hidden>
+    <div class="sheet-alca" aria-hidden="true"></div>
+    <div class="sheet-cabecalho">
+      <div>
+        <p class="sheet-marca">Barber<span>Shop</span> Agenda</p>
+        <h2 id="titulo-sheet" class="sheet-data"></h2>
+      </div>
+      <button type="button" class="sheet-fechar" id="sheet-fechar" aria-label="Fechar">✕</button>
+    </div>
+
+    <div class="sheet-resumo" id="sheet-resumo"></div>
+
+    <label class="sheet-toggle">
+      <span>Não quero conversar durante o atendimento</span>
+      <input type="checkbox" id="toggle-silencio" />
+      <span class="sheet-toggle-visual" aria-hidden="true"></span>
+    </label>
+
+    <form id="form-confirmacao" novalidate>
+      <div class="campo">
+        <label for="cliente-nome">Nome completo</label>
+        <input type="text" id="cliente-nome" required aria-required="true" maxlength="150" autocomplete="name" placeholder="Seu nome" />
+      </div>
+      <div class="linha-formulario">
+        <div class="campo">
+          <label for="cliente-telefone">Telefone</label>
+          <input type="tel" id="cliente-telefone" required aria-required="true" maxlength="20" placeholder="(11) 99999-0000" autocomplete="tel" />
+        </div>
+        <div class="campo">
+          <label for="cliente-email">E-mail</label>
+          <input type="email" id="cliente-email" required aria-required="true" maxlength="150" autocomplete="email" placeholder="seu@email.com" />
+          <p class="texto-suave texto-ajuda">Vamos te enviar a confirmação e o código por e-mail — guarda ele caso perca a tela.</p>
+        </div>
+      </div>
+      <div class="campo">
+        <label for="agendamento-observacao">Alguma observação?</label>
+        <textarea id="agendamento-observacao" rows="2" maxlength="500" placeholder="Ex: não precisa lavar, etc."></textarea>
+      </div>
+      <button type="submit" class="botao-primario botao-grande">Confirmar agendamento</button>
+      <button type="button" class="botao-texto" id="sheet-cancelar">Cancelar</button>
+    </form>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/agendar.js"></script>
+</body>
+</html>

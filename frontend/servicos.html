@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop Agenda — Serviços</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a href="#conteudo-principal" class="pular-para-conteudo">Pular para o conteúdo principal</a>
+
+  <header class="cabecalho">
+    <a href="index.html" class="logo" aria-label="BarberShop Agenda, página inicial">Barber<span>Shop</span> Agenda</a>
+    <nav class="navegacao" aria-label="Navegação principal">
+      <a href="index.html">Dashboard</a>
+      <a href="agendamentos.html">Agendamentos</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="barbeiros.html">Barbeiros</a>
+      <a href="servicos.html" aria-current="page">Serviços</a>
+    </nav>
+  </header>
+
+  <main id="conteudo-principal">
+    <h1>Serviços</h1>
+    <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+
+    <section class="cartao" aria-labelledby="titulo-novo-servico">
+      <h2 id="titulo-novo-servico">Cadastrar serviço</h2>
+      <form id="form-servico" novalidate>
+        <input type="hidden" id="servico-id" value="" />
+        <div class="linha-formulario">
+          <div class="campo">
+            <label for="servico-nome">Nome</label>
+            <input type="text" id="servico-nome" name="nome" required aria-required="true" maxlength="150" />
+          </div>
+          <div class="campo">
+            <label for="servico-preco">Preço (R$)</label>
+            <input type="number" id="servico-preco" name="preco" required aria-required="true" min="0" step="0.01" />
+          </div>
+          <div class="campo">
+            <label for="servico-duracao">Duração (minutos)</label>
+            <input type="number" id="servico-duracao" name="duracaoMinutos" required aria-required="true" min="1" step="1" />
+          </div>
+        </div>
+        <div class="campo">
+          <label for="servico-descricao">Descrição (opcional)</label>
+          <textarea id="servico-descricao" name="descricao" rows="2" maxlength="500"></textarea>
+        </div>
+        <div class="acoes-tabela">
+          <button type="submit" class="botao-primario">Salvar serviço</button>
+          <button type="button" id="botao-cancelar-edicao" class="botao-secundario" hidden>Cancelar edição</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="cartao" aria-labelledby="titulo-lista-servicos">
+      <h2 id="titulo-lista-servicos">Serviços cadastrados</h2>
+      <div id="lista-servicos" class="tabela-wrapper">
+        <p class="carregando">Carregando serviços...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">BarberShop Agenda &mdash; sistema de agendamento para barbearias</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/servicos.js"></script>
+</body>
+</html>

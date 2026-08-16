@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop Agenda — Trocar senha</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a href="#conteudo-principal" class="pular-para-conteudo">Pular para o conteúdo principal</a>
+
+  <header class="cabecalho">
+    <a href="index.html" class="logo" aria-label="BarberShop Agenda, página inicial">Barber<span>Shop</span> Agenda</a>
+  </header>
+
+  <main id="conteudo-principal" class="main-estreita">
+    <h1>Trocar senha</h1>
+    <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+
+    <section class="cartao" aria-labelledby="titulo-trocar-senha">
+      <h2 id="titulo-trocar-senha">Sua senha</h2>
+      <form id="form-trocar-senha" novalidate>
+        <div class="campo">
+          <label for="senha-atual">Senha atual</label>
+          <input type="password" id="senha-atual" required aria-required="true" autocomplete="current-password" />
+        </div>
+        <div class="campo">
+          <label for="senha-nova">Nova senha</label>
+          <input type="password" id="senha-nova" required aria-required="true" minlength="6" autocomplete="new-password" />
+        </div>
+        <div class="campo">
+          <label for="senha-nova-confirmar">Confirmar nova senha</label>
+          <input type="password" id="senha-nova-confirmar" required aria-required="true" minlength="6" autocomplete="new-password" />
+        </div>
+        <div class="acoes-tabela">
+          <button type="submit" class="botao-primario">Salvar nova senha</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="rodape">BarberShop Agenda &mdash; sistema de agendamento para barbearias</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/trocar-senha.js"></script>
+</body>
+</html>

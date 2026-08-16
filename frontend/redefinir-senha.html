@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop Agenda — Redefinir senha</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a href="#conteudo-principal" class="pular-para-conteudo">Pular para o conteúdo principal</a>
+
+  <header class="cabecalho">
+    <a href="agendar.html" class="logo" aria-label="BarberShop Agenda, página inicial">Barber<span>Shop</span> Agenda</a>
+  </header>
+
+  <main id="conteudo-principal" class="main-estreita">
+    <h1>Redefinir senha</h1>
+    <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+
+    <section class="cartao" id="secao-formulario" aria-labelledby="titulo-redefinir">
+      <h2 id="titulo-redefinir">Escolha uma nova senha</h2>
+      <form id="form-redefinir-senha" novalidate>
+        <div class="campo">
+          <label for="redefinir-senha">Nova senha</label>
+          <input type="password" id="redefinir-senha" required aria-required="true" minlength="6" autocomplete="new-password" />
+        </div>
+        <div class="campo">
+          <label for="redefinir-confirmar-senha">Confirmar nova senha</label>
+          <input type="password" id="redefinir-confirmar-senha" required aria-required="true" minlength="6" autocomplete="new-password" />
+        </div>
+        <div class="acoes-tabela">
+          <button type="submit" class="botao-primario">Redefinir senha</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="cartao" id="secao-sucesso" hidden role="status">
+      <p>Senha redefinida com sucesso.</p>
+      <div class="acoes-tabela">
+        <a href="login.html" class="botao-primario">Entrar</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">BarberShop Agenda &mdash; sistema de agendamento para barbearias</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/redefinir-senha.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop Agenda — Barbeiros</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a href="#conteudo-principal" class="pular-para-conteudo">Pular para o conteúdo principal</a>
+
+  <header class="cabecalho">
+    <a href="index.html" class="logo" aria-label="BarberShop Agenda, página inicial">Barber<span>Shop</span> Agenda</a>
+    <nav class="navegacao" aria-label="Navegação principal">
+      <a href="index.html">Dashboard</a>
+      <a href="agendamentos.html">Agendamentos</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="barbeiros.html" aria-current="page">Barbeiros</a>
+      <a href="servicos.html">Serviços</a>
+    </nav>
+  </header>
+
+  <main id="conteudo-principal">
+    <h1>Barbeiros</h1>
+    <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+
+    <section class="cartao" aria-labelledby="titulo-novo-barbeiro">
+      <h2 id="titulo-novo-barbeiro">Cadastrar barbeiro</h2>
+      <form id="form-barbeiro" novalidate>
+        <input type="hidden" id="barbeiro-id" value="" />
+        <div class="linha-formulario">
+          <div class="campo">
+            <label for="barbeiro-nome">Nome</label>
+            <input type="text" id="barbeiro-nome" name="nome" required aria-required="true" maxlength="150" />
+          </div>
+          <div class="campo">
+            <label for="barbeiro-especialidade">Especialidade</label>
+            <input type="text" id="barbeiro-especialidade" name="especialidade" maxlength="150" />
+          </div>
+          <div class="campo">
+            <label for="barbeiro-ativo">Situação da agenda</label>
+            <select id="barbeiro-ativo" name="ativo">
+              <option value="true">Ativa</option>
+              <option value="false">Inativa</option>
+            </select>
+            <p class="texto-suave texto-ajuda">Controla se ele aparece pra clientes agendarem. Não afeta o login — isso é separado, na tabela abaixo.</p>
+          </div>
+        </div>
+        <div class="linha-formulario">
+          <div class="campo">
+            <label for="barbeiro-ferias-inicio">Férias/ausência — início (opcional)</label>
+            <input type="date" id="barbeiro-ferias-inicio" name="feriasInicio" />
+          </div>
+          <div class="campo">
+            <label for="barbeiro-ferias-fim">Férias/ausência — fim (opcional)</label>
+            <input type="date" id="barbeiro-ferias-fim" name="feriasFim" />
+            <p class="texto-suave texto-ajuda">Sem horário disponível só nesse período — antes e depois volta ao normal sozinho.</p>
+          </div>
+        </div>
+        <div class="linha-formulario" id="linha-conta-acesso">
+          <div class="campo">
+            <label for="barbeiro-email">E-mail de login</label>
+            <input type="email" id="barbeiro-email" name="email" maxlength="150" autocomplete="off" />
+          </div>
+          <div class="campo">
+            <label for="barbeiro-senha">Senha</label>
+            <input type="password" id="barbeiro-senha" name="senha" minlength="6" autocomplete="new-password" />
+            <p class="texto-suave texto-ajuda">Defina a senha inicial — o barbeiro pode trocar depois de entrar.</p>
+          </div>
+        </div>
+        <div class="acoes-tabela">
+          <button type="submit" class="botao-primario">Salvar barbeiro</button>
+          <button type="button" id="botao-cancelar-edicao" class="botao-secundario" hidden>Cancelar edição</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="cartao" aria-labelledby="titulo-lista-barbeiros">
+      <h2 id="titulo-lista-barbeiros">Barbeiros cadastrados</h2>
+      <div id="lista-barbeiros" class="tabela-wrapper">
+        <p class="carregando">Carregando barbeiros...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">BarberShop Agenda &mdash; sistema de agendamento para barbearias</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/barbeiros.js"></script>
+</body>
+</html>

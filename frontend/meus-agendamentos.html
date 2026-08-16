@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop Agenda — Meus agendamentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/agendar.css" />
+</head>
+<body class="pagina-agendar">
+  <a href="#conteudo-principal" class="pular-para-conteudo">Pular para o conteúdo principal</a>
+
+  <header class="topo-agendar">
+    <div class="topo-agendar-faixa" aria-hidden="true"></div>
+    <div class="topo-agendar-conteudo">
+      <div class="topo-agendar-links">
+        <a href="agendar.html" class="topo-agendar-login">Agendar horário</a>
+        <a href="login.html" class="topo-agendar-login">Entrar</a>
+      </div>
+      <p class="topo-agendar-eyebrow">Sua conta</p>
+      <h1 class="topo-agendar-titulo">Meus <span>agendamentos</span></h1>
+      <p class="topo-agendar-subtitulo">Informe o telefone e o código de confirmação de algum agendamento seu. Prefere não guardar código? <a href="criar-conta.html">Crie uma conta</a>.</p>
+    </div>
+  </header>
+
+  <div id="feedback" class="feedback feedback-flutuante" role="status" aria-live="polite"></div>
+
+  <main id="conteudo-principal">
+    <section class="secao-agendar" aria-labelledby="titulo-busca">
+      <h2 id="titulo-busca">Buscar meus agendamentos</h2>
+      <form id="form-busca" novalidate>
+        <div class="campo">
+          <label for="busca-telefone">Telefone</label>
+          <input type="tel" id="busca-telefone" required aria-required="true" maxlength="20" placeholder="(11) 99999-0000" autocomplete="tel" />
+        </div>
+        <div class="campo">
+          <label for="busca-codigo">Código de confirmação</label>
+          <input type="text" id="busca-codigo" required aria-required="true" maxlength="6" placeholder="Ex: ZRJDKV" autocapitalize="characters" />
+          <p class="texto-suave texto-ajuda">O código de 6 caracteres que apareceu na tela ao final de qualquer agendamento seu.</p>
+        </div>
+        <button type="submit" class="botao-primario botao-grande">Buscar meus agendamentos</button>
+      </form>
+    </section>
+
+    <section class="secao-agendar" id="secao-resultados" aria-labelledby="titulo-resultados" hidden>
+      <h2 id="titulo-resultados">Seus agendamentos</h2>
+      <div id="lista-resultados"></div>
+    </section>
+  </main>
+
+  <footer class="rodape">BarberShop Agenda &mdash; sistema de agendamento para barbearias</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/meus-agendamentos.js"></script>
+</body>
+</html>

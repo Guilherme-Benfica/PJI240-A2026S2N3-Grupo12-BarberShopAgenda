@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop Agenda — Clientes</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a href="#conteudo-principal" class="pular-para-conteudo">Pular para o conteúdo principal</a>
+
+  <header class="cabecalho">
+    <a href="index.html" class="logo" aria-label="BarberShop Agenda, página inicial">Barber<span>Shop</span> Agenda</a>
+    <nav class="navegacao" aria-label="Navegação principal">
+      <a href="index.html">Dashboard</a>
+      <a href="agendamentos.html">Agendamentos</a>
+      <a href="clientes.html" aria-current="page">Clientes</a>
+      <a href="barbeiros.html">Barbeiros</a>
+      <a href="servicos.html">Serviços</a>
+    </nav>
+  </header>
+
+  <main id="conteudo-principal">
+    <h1>Clientes</h1>
+    <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+
+    <section class="cartao" aria-labelledby="titulo-novo-cliente">
+      <h2 id="titulo-novo-cliente">Cadastrar cliente</h2>
+      <form id="form-cliente" novalidate>
+        <input type="hidden" id="cliente-id" value="" />
+        <div class="linha-formulario">
+          <div class="campo">
+            <label for="cliente-nome">Nome completo</label>
+            <input type="text" id="cliente-nome" name="nome" required aria-required="true" maxlength="150" />
+          </div>
+          <div class="campo">
+            <label for="cliente-telefone">Telefone</label>
+            <input type="tel" id="cliente-telefone" name="telefone" required aria-required="true" maxlength="20" placeholder="(11) 99999-0000" />
+          </div>
+          <div class="campo">
+            <label for="cliente-email">E-mail (opcional)</label>
+            <input type="email" id="cliente-email" name="email" maxlength="150" />
+          </div>
+        </div>
+        <div class="acoes-tabela">
+          <button type="submit" class="botao-primario">Salvar cliente</button>
+          <button type="button" id="botao-cancelar-edicao" class="botao-secundario" hidden>Cancelar edição</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="cartao" aria-labelledby="titulo-lista-clientes">
+      <h2 id="titulo-lista-clientes">Clientes cadastrados</h2>
+      <div id="lista-clientes" class="tabela-wrapper">
+        <p class="carregando">Carregando clientes...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">BarberShop Agenda &mdash; sistema de agendamento para barbearias</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/clientes.js"></script>
+</body>
+</html>

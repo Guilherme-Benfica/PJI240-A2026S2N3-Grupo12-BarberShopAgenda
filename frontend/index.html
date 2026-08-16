@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop Agenda — Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a href="#conteudo-principal" class="pular-para-conteudo">Pular para o conteúdo principal</a>
+
+  <header class="cabecalho">
+    <a href="index.html" class="logo" aria-label="BarberShop Agenda, página inicial">Barber<span>Shop</span> Agenda</a>
+    <nav class="navegacao" aria-label="Navegação principal">
+      <a href="index.html" aria-current="page">Dashboard</a>
+      <a href="agendamentos.html">Agendamentos</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="barbeiros.html">Barbeiros</a>
+      <a href="servicos.html">Serviços</a>
+    </nav>
+  </header>
+
+  <main id="conteudo-principal">
+    <h1>Resumo do dia</h1>
+    <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+
+    <section class="grade-resumo" aria-label="Indicadores do dia">
+      <div class="cartao-metrica">
+        <div class="valor" id="valor-total">–</div>
+        <div class="rotulo">Total de agendamentos</div>
+      </div>
+      <div class="cartao-metrica">
+        <div class="valor" id="valor-pendentes">–</div>
+        <div class="rotulo">Pendentes</div>
+      </div>
+      <div class="cartao-metrica">
+        <div class="valor" id="valor-confirmados">–</div>
+        <div class="rotulo">Confirmados</div>
+      </div>
+      <div class="cartao-metrica">
+        <div class="valor" id="valor-concluidos">–</div>
+        <div class="rotulo">Concluídos</div>
+      </div>
+      <div class="cartao-metrica">
+        <div class="valor" id="valor-cancelados">–</div>
+        <div class="rotulo">Cancelados</div>
+      </div>
+      <div class="cartao-metrica">
+        <div class="valor" id="valor-receita">–</div>
+        <div class="rotulo">Receita prevista</div>
+      </div>
+    </section>
+
+    <section class="cartao" aria-labelledby="titulo-agenda-hoje">
+      <h2 id="titulo-agenda-hoje">Agenda de hoje</h2>
+      <div id="lista-agenda-hoje" class="tabela-wrapper">
+        <p class="carregando">Carregando agenda...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">BarberShop Agenda &mdash; sistema de agendamento para barbearias</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop Agenda — Esqueci minha senha</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a href="#conteudo-principal" class="pular-para-conteudo">Pular para o conteúdo principal</a>
+
+  <header class="cabecalho">
+    <a href="agendar.html" class="logo" aria-label="BarberShop Agenda, página inicial">Barber<span>Shop</span> Agenda</a>
+  </header>
+
+  <main id="conteudo-principal" class="main-estreita">
+    <h1>Esqueci minha senha</h1>
+    <p class="texto-suave">Informe o e-mail da sua conta. Se ele existir, mandamos um link pra você escolher uma nova senha.</p>
+    <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+
+    <section class="cartao" aria-labelledby="titulo-esqueci">
+      <h2 id="titulo-esqueci">Redefinir senha</h2>
+      <form id="form-esqueci-senha" novalidate>
+        <div class="campo">
+          <label for="esqueci-email">E-mail</label>
+          <input type="email" id="esqueci-email" required aria-required="true" autocomplete="email" />
+        </div>
+        <div class="acoes-tabela">
+          <button type="submit" class="botao-primario">Enviar link de redefinição</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="rodape">BarberShop Agenda &mdash; sistema de agendamento para barbearias</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/esqueci-senha.js"></script>
+</body>
+</html>

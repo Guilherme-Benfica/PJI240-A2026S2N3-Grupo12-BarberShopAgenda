@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop Agenda — Agendamentos</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a href="#conteudo-principal" class="pular-para-conteudo">Pular para o conteúdo principal</a>
+
+  <header class="cabecalho">
+    <a href="index.html" class="logo" aria-label="BarberShop Agenda, página inicial">Barber<span>Shop</span> Agenda</a>
+    <nav class="navegacao" aria-label="Navegação principal">
+      <a href="index.html">Dashboard</a>
+      <a href="agendamentos.html" aria-current="page">Agendamentos</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="barbeiros.html">Barbeiros</a>
+      <a href="servicos.html">Serviços</a>
+    </nav>
+  </header>
+
+  <main id="conteudo-principal">
+    <h1>Agendamentos</h1>
+    <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+
+    <section class="cartao" id="secao-novo-agendamento" aria-labelledby="titulo-novo-agendamento">
+      <h2 id="titulo-novo-agendamento">Novo agendamento</h2>
+      <form id="form-agendamento" novalidate>
+        <div class="linha-formulario">
+          <div class="campo">
+            <label for="agendamento-cliente">Cliente</label>
+            <select id="agendamento-cliente" name="clienteId" required aria-required="true">
+              <option value="">Selecione um cliente</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="agendamento-barbeiro">Barbeiro</label>
+            <select id="agendamento-barbeiro" name="barbeiroId" required aria-required="true">
+              <option value="">Selecione um barbeiro</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="agendamento-servico">Serviço</label>
+            <select id="agendamento-servico" name="servicoId" required aria-required="true">
+              <option value="">Selecione um serviço</option>
+            </select>
+          </div>
+        </div>
+        <div class="linha-formulario">
+          <div class="campo">
+            <label for="agendamento-data">Data</label>
+            <input type="date" id="agendamento-data" name="data" required aria-required="true" />
+          </div>
+          <div class="campo">
+            <label for="agendamento-hora">Horário</label>
+            <input type="time" id="agendamento-hora" name="hora" required aria-required="true" />
+          </div>
+        </div>
+        <div class="campo">
+          <label for="agendamento-observacao">Observação (opcional)</label>
+          <textarea id="agendamento-observacao" name="observacao" rows="2" maxlength="500"></textarea>
+        </div>
+        <div class="acoes-tabela">
+          <button type="submit" class="botao-primario">Criar agendamento</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="cartao" aria-labelledby="titulo-filtro-agenda">
+      <h2 id="titulo-filtro-agenda">Visualizar agenda</h2>
+      <form id="form-filtro" novalidate>
+        <div class="linha-formulario">
+          <div class="campo">
+            <label for="filtro-barbeiro">Filtrar por barbeiro</label>
+            <select id="filtro-barbeiro" name="barbeiroId">
+              <option value="">Todos os barbeiros</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="filtro-data">Filtrar por data</label>
+            <input type="date" id="filtro-data" name="data" />
+          </div>
+        </div>
+        <div class="acoes-tabela">
+          <button type="submit" class="botao-primario">Filtrar</button>
+          <button type="button" id="botao-limpar-filtro" class="botao-secundario">Limpar filtro</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="cartao" aria-labelledby="titulo-lista-agendamentos">
+      <h2 id="titulo-lista-agendamentos">Agendamentos</h2>
+      <div id="lista-agendamentos" class="tabela-wrapper">
+        <p class="carregando">Carregando agendamentos...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">BarberShop Agenda &mdash; sistema de agendamento para barbearias</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/agendamentos.js"></script>
+</body>
+</html>

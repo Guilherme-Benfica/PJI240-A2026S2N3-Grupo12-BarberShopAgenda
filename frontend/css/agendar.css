@@ -1,0 +1,836 @@
+/* ============================================================
+   Agendar — fluxo público de agendamento
+   Estende o tema dourado/preto do style.css com um layout
+   mobile-first inspirado em apps de agendamento de barbearia.
+   ============================================================ */
+
+:root {
+  --fonte-display: "Bebas Neue", var(--fonte);
+  --fonte-corpo: "Manrope", var(--fonte);
+  --cor-icone-servico-de: #3a2f10;
+  --cor-icone-servico-para: #1a1a1a;
+  --sombra-elevacao: 0 -12px 32px rgba(0, 0, 0, 0.55);
+}
+
+.pagina-agendar,
+.pagina-agendar input,
+.pagina-agendar textarea,
+.pagina-agendar select,
+.pagina-agendar button {
+  font-family: var(--fonte-corpo);
+}
+
+.pagina-agendar main {
+  max-width: 640px;
+  padding-top: 1.5rem;
+}
+
+/* ---------- Topo / hero ---------- */
+.topo-agendar {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 140% at 15% -20%, rgba(212, 175, 55, 0.22), transparent 55%),
+    #000;
+  border-bottom: 1px solid var(--cor-borda);
+  padding: 2.75rem 1.5rem 2.25rem;
+}
+
+.topo-agendar-faixa {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    -35deg,
+    rgba(212, 175, 55, 0.06) 0,
+    rgba(212, 175, 55, 0.06) 2px,
+    transparent 2px,
+    transparent 26px
+  );
+  pointer-events: none;
+}
+
+.topo-agendar-conteudo {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.topo-agendar-links {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  max-width: 60%;
+}
+
+.topo-agendar-login {
+  color: var(--cor-texto-suave);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--cor-borda);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  white-space: nowrap;
+}
+
+.topo-agendar-login:hover,
+.topo-agendar-login:focus-visible {
+  border-color: var(--cor-dourado);
+  color: var(--cor-dourado);
+}
+
+.topo-agendar-eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--cor-dourado);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.topo-agendar-titulo {
+  font-family: var(--fonte-display);
+  font-weight: 400;
+  font-size: 3rem;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  margin: 0 0 0.6rem;
+  color: var(--cor-texto);
+  max-width: 80%;
+}
+
+.topo-agendar-titulo span {
+  color: var(--cor-dourado);
+}
+
+.topo-agendar-subtitulo {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 1rem;
+  max-width: 30ch;
+}
+
+/* ---------- Indicador de etapas ---------- */
+.indicador-etapas {
+  list-style: none;
+  display: flex;
+  gap: 0.4rem;
+  padding: 0 1.5rem;
+  margin: 1.5rem auto 1.75rem;
+  max-width: 640px;
+}
+
+.indicador-etapas li {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--cor-texto-suave);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid var(--cor-borda);
+}
+
+.indicador-etapas li.etapa-ativa {
+  color: var(--cor-dourado);
+  border-color: var(--cor-dourado);
+}
+
+.etapa-numero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background-color: var(--cor-fundo-elevado);
+  border: 1px solid currentColor;
+  font-size: 0.75rem;
+}
+
+/* ---------- Seções ---------- */
+.secao-agendar {
+  padding: 0 1.5rem 2rem;
+}
+
+.secao-agendar h2 {
+  font-family: var(--fonte-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  margin: 0 0 1rem;
+}
+
+.subtitulo-secao {
+  color: var(--cor-texto);
+  font-size: 1rem;
+  margin: 1.5rem 0 0.75rem;
+}
+
+/* ---------- Busca de serviço ---------- */
+.campo-busca {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.icone-busca {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--cor-texto-suave);
+}
+
+.campo-busca input {
+  width: 100%;
+  padding-left: 2.6rem;
+  border-radius: 999px;
+}
+
+/* ---------- Lista de serviços ---------- */
+.lista-servicos {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-servico {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--cor-borda);
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+
+.item-servico:last-child {
+  border-bottom: none;
+}
+
+.avatar-servico {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(155deg, var(--cor-icone-servico-de), var(--cor-icone-servico-para));
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-dourado);
+  font-family: var(--fonte-display);
+  font-size: 1.1rem;
+}
+
+.item-servico-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-servico-nome {
+  font-weight: 700;
+  margin: 0 0 0.15rem;
+}
+
+.item-servico-detalhes {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+}
+
+.item-servico-preco {
+  color: var(--cor-sucesso);
+  font-weight: 700;
+}
+
+.item-servico-duracao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.item-servico-selecionar {
+  flex-shrink: 0;
+  background-color: var(--cor-dourado);
+  color: #000;
+  border: none;
+  border-radius: var(--raio);
+  padding: 0.55rem 1rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.item-servico-selecionar:hover {
+  background-color: var(--cor-dourado-hover);
+}
+
+.item-servico.servico-ativo {
+  background-color: var(--cor-fundo-cartao);
+  margin: 0 -1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: var(--raio);
+}
+
+/* ---------- Resumo do serviço escolhido ---------- */
+.resumo-servico-escolhido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background-color: var(--cor-fundo-cartao);
+  border: 1px solid var(--cor-borda);
+  border-left: 3px solid var(--cor-dourado);
+  border-radius: var(--raio);
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.resumo-servico-nome {
+  font-weight: 700;
+}
+
+.resumo-servico-preco {
+  color: var(--cor-sucesso);
+  font-size: 0.9rem;
+}
+
+.resumo-servico-trocar {
+  background: none;
+  border: none;
+  color: var(--cor-dourado);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ---------- Tira de datas ---------- */
+.tira-datas {
+  display: flex;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding: 0.25rem 0.1rem 0.75rem;
+  scrollbar-width: thin;
+}
+
+.dia-data {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 3.4rem;
+  padding: 0.6rem 0;
+  border-radius: var(--raio);
+  border: 1px solid transparent;
+  background: none;
+  color: var(--cor-texto);
+  cursor: pointer;
+}
+
+.dia-data-semana {
+  font-size: 0.72rem;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+}
+
+.dia-data-numero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.dia-data.dia-selecionado .dia-data-numero {
+  background-color: var(--cor-dourado);
+  color: #000;
+}
+
+.dia-data:hover:not(.dia-selecionado) .dia-data-numero {
+  background-color: var(--cor-fundo-elevado);
+}
+
+/* ---------- Tira de profissionais ---------- */
+.tira-profissionais {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0.25rem 0.1rem 0.5rem;
+}
+
+.item-profissional {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  width: 4.4rem;
+  background: none;
+  border: none;
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.avatar-profissional {
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--cor-fundo-elevado);
+  border: 2px solid transparent;
+  color: var(--cor-texto);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.item-profissional.profissional-selecionado {
+  color: var(--cor-dourado);
+}
+
+.item-profissional.profissional-selecionado .avatar-profissional {
+  border-color: var(--cor-dourado);
+}
+
+.item-profissional-nome {
+  font-size: 0.78rem;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ---------- Horários ---------- */
+.bloco-horarios {
+  margin-top: 1.25rem;
+}
+
+.dica-horarios {
+  color: var(--cor-texto-suave);
+  background-color: var(--cor-fundo-cartao);
+  border: 1px dashed var(--cor-borda);
+  border-radius: var(--raio);
+  padding: 1rem;
+  text-align: center;
+}
+
+.periodo-horarios + .periodo-horarios {
+  margin-top: 1.5rem;
+}
+
+.periodo-horarios-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  color: var(--cor-texto);
+  font-weight: 700;
+}
+
+.periodo-horarios-linha {
+  flex: 1;
+  height: 1px;
+  background-color: var(--cor-borda);
+}
+
+.periodo-horarios-contagem {
+  color: var(--cor-texto-suave);
+  font-weight: 400;
+  font-size: 0.82rem;
+  background-color: var(--cor-fundo-elevado);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+}
+
+.grade-horarios {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.horario-slot {
+  background-color: var(--cor-fundo-cartao);
+  border: 1px solid var(--cor-dourado);
+  color: var(--cor-texto);
+  padding: 0.65rem;
+  border-radius: var(--raio);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.horario-slot:hover {
+  background-color: var(--cor-fundo-elevado);
+}
+
+.horario-slot.selecionado {
+  background-color: var(--cor-dourado);
+  color: #000;
+}
+
+/* ---------- Bottom sheet ---------- */
+.sheet-fundo {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(2px);
+  z-index: 40;
+  animation: agendar-fade 0.2s ease-out;
+}
+
+.sheet-confirmacao {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  max-width: 640px;
+  margin: 0 auto;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: var(--cor-fundo-cartao);
+  border: 1px solid var(--cor-borda);
+  border-bottom: none;
+  border-radius: 20px 20px 0 0;
+  box-shadow: var(--sombra-elevacao);
+  padding: 0.75rem 1.5rem 2rem;
+  animation: agendar-subir 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes agendar-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes agendar-subir {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.sheet-alca {
+  width: 2.5rem;
+  height: 4px;
+  background-color: var(--cor-borda);
+  border-radius: 999px;
+  margin: 0 auto 1rem;
+}
+
+.sheet-cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sheet-marca {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.sheet-marca span {
+  color: var(--cor-dourado);
+}
+
+.sheet-data {
+  margin: 0.1rem 0 0;
+  font-family: var(--fonte-display);
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+
+.sheet-fechar {
+  background-color: var(--cor-fundo-elevado);
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-texto);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.sheet-resumo {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background-color: var(--cor-fundo-elevado);
+  border-radius: var(--raio);
+  padding: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.sheet-resumo-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sheet-resumo-servico {
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+}
+
+.sheet-resumo-barbeiro {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+  margin: 0 0 0.25rem;
+}
+
+.sheet-resumo-preco {
+  color: var(--cor-sucesso);
+  font-weight: 700;
+  margin: 0;
+}
+
+.sheet-resumo-quando {
+  text-align: right;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.sheet-resumo-quando strong {
+  display: block;
+  color: var(--cor-texto);
+  font-size: 1rem;
+}
+
+.sheet-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background-color: rgba(224, 168, 59, 0.08);
+  border: 1px solid var(--cor-pendente);
+  border-radius: var(--raio);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  color: var(--cor-pendente);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.sheet-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.sheet-toggle-visual {
+  flex-shrink: 0;
+  width: 2.4rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  background-color: var(--cor-fundo-elevado);
+  border: 1px solid var(--cor-borda);
+  position: relative;
+  transition: background-color 0.15s ease;
+}
+
+.sheet-toggle-visual::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background-color: var(--cor-texto);
+  transition: transform 0.15s ease;
+}
+
+.sheet-toggle input:checked + .sheet-toggle-visual {
+  background-color: var(--cor-pendente);
+}
+
+.sheet-toggle input:checked + .sheet-toggle-visual::after {
+  transform: translateX(1rem);
+  background-color: #000;
+}
+
+.sheet-toggle input:focus-visible + .sheet-toggle-visual {
+  outline: 3px solid var(--cor-dourado);
+  outline-offset: 2px;
+}
+
+#form-confirmacao .campo {
+  margin-bottom: 1rem;
+}
+
+.botao-grande {
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 1rem;
+  border-radius: var(--raio);
+}
+
+.botao-texto {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--cor-texto-suave);
+  padding: 0.75rem;
+  font-weight: 600;
+}
+
+.botao-texto:hover {
+  color: var(--cor-texto);
+}
+
+/* ---------- Meus agendamentos ---------- */
+.item-agendamento {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--cor-fundo-cartao);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.item-agendamento-data {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: var(--raio);
+  background-color: var(--cor-fundo-elevado);
+  border: 1px solid var(--cor-borda);
+}
+
+.item-agendamento-dia {
+  font-family: var(--fonte-display);
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--cor-dourado);
+}
+
+.item-agendamento-mes {
+  font-size: 0.65rem;
+  color: var(--cor-texto-suave);
+  letter-spacing: 0.05em;
+}
+
+.item-agendamento-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-agendamento-servico {
+  font-weight: 700;
+  margin: 0 0 0.15rem;
+}
+
+.item-agendamento-detalhe {
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+  margin: 0 0 0.15rem;
+}
+
+.item-agendamento-preco {
+  color: var(--cor-sucesso);
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ---------- Sucesso ---------- */
+.cartao-sucesso {
+  text-align: center;
+  background-color: var(--cor-fundo-cartao);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: 2.5rem 1.5rem;
+}
+
+.icone-sucesso {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background-color: var(--cor-sucesso);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.rotulo-codigo {
+  margin: 1.5rem 0 0.5rem;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+}
+
+.codigo-confirmacao {
+  font-family: var(--fonte-display);
+  font-size: 2.2rem;
+  letter-spacing: 0.25em;
+  color: var(--cor-dourado);
+  background-color: var(--cor-fundo-elevado);
+  border-radius: var(--raio);
+  padding: 0.75rem;
+  margin: 0 0 1.5rem;
+}
+
+.feedback-flutuante {
+  max-width: 640px;
+  margin: 1rem auto 0;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* ---------- Telas maiores ---------- */
+@media (min-width: 640px) {
+  .topo-agendar {
+    padding: 3.5rem 2.5rem 2.75rem;
+  }
+  .topo-agendar-titulo {
+    font-size: 3.6rem;
+  }
+  .secao-agendar {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+  .indicador-etapas,
+  .feedback-flutuante {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+  .sheet-confirmacao {
+    border-radius: 20px;
+    bottom: 2rem;
+    padding: 1rem 2rem 2rem;
+  }
+}

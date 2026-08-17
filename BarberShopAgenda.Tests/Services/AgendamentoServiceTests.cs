@@ -30,10 +30,11 @@ public class AgendamentoServiceTests
         var barbeiroRepository = new BarbeiroRepository(context);
         var servicoRepository = new ServicoRepository(context);
         var emailServiceMock = new Mock<IEmailService>();
+        var clienteContaServiceMock = new Mock<IClienteContaService>();
 
         var service = new AgendamentoService(
             agendamentoRepository, clienteRepository, barbeiroRepository, servicoRepository,
-            emailServiceMock.Object, NullLogger<AgendamentoService>.Instance);
+            emailServiceMock.Object, clienteContaServiceMock.Object, NullLogger<AgendamentoService>.Instance);
 
         return (service, context, emailServiceMock);
     }

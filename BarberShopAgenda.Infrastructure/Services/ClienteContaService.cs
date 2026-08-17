@@ -110,4 +110,39 @@ public class ClienteContaService : IClienteContaService
 
         return await _usuarioRepository.UpdateAsync(usuario);
     }
+
+    public async Task GarantirContaVinculadaAsync(int clienteId)
+    {
+        var cliente = await _clienteRepository.GetByIdAsync(clienteId);
+        if (cliente is null || cliente.UsuarioId is not null || string.IsNullOrWhiteSpace(cliente.Email))
+            return;
+
+        var usuarioExistente = await _usuarioRepository.GetByEmailAsync(cliente.Email);
+        if (usuarioExistente is not null)
+        {
+            if (usuarioExistente.Papel == PapelUsuario.Cliente)
+                await _clienteRepository.VincularUsuarioAsync(cliente.Id, usuarioExistente.Id);
+            return;
+        }
+
+        var usuario = new Usuario
+        {
+            Nome = cliente.Nome,
+            Email = cliente.Email,
+            Papel = PapelUsuario.Cliente,
+            Ativo = true,
+            DataCadastro = DateTime.UtcNow,
+            EmailConfirmado = true,
+            TokenResetSenha = RandomNumberGenerator.GetHexString(48),
+            TokenResetSenhaExpiraEm = DateTime.UtcNow.AddMinutes(MinutosExpiracaoResetSenha)
+        };
+        usuario.SenhaHash = _passwordHasher.HashPassword(usuario, RandomNumberGenerator.GetHexString(32));
+
+        var criado = await _usuarioRepository.AddAsync(usuario);
+        await _clienteRepository.VincularUsuarioAsync(cliente.Id, criado.Id);
+
+        var baseUrl = _configuration["Frontend:BaseUrl"]?.TrimEnd('/') ?? "http://localhost:5500";
+        var link = $"{baseUrl}/redefinir-senha.html?token={criado.TokenResetSenha}";
+        await _emailService.EnviarBoasVindasContaAsync(cliente.Email, cliente.Nome, link);
+    }
 }

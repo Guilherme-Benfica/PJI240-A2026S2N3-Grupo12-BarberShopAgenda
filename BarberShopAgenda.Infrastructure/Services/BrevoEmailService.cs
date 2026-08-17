@@ -89,6 +89,24 @@ public class BrevoEmailService : IEmailService
         return EnviarAsync(destinatarioEmail, destinatarioNome, "Redefinir sua senha — BarberShop Agenda", corpo);
     }
 
+    public Task EnviarBoasVindasContaAsync(string destinatarioEmail, string destinatarioNome, string linkDefinirSenha)
+    {
+        var corpo = $"""
+            <div style="font-family: Arial, sans-serif; background:#0d0d0d; color:#f2f2f2; padding:24px;">
+              <h1 style="color:#d4af37; font-size:20px;">Sua conta está pronta</h1>
+              <p>Olá, {destinatarioNome}!</p>
+              <p>Criamos automaticamente uma conta pra você acompanhar seus agendamentos no BarberShop Agenda. Falta só escolher uma senha:</p>
+              <p style="text-align:center; margin:24px 0;">
+                <a href="{linkDefinirSenha}" style="background:#d4af37; color:#000; text-decoration:none; font-weight:bold; padding:12px 24px; border-radius:8px; display:inline-block;">Definir minha senha</a>
+              </p>
+              <p style="color:#b8b8b8; font-size:13px;">Depois de definir a senha, entre usando este mesmo e-mail. Se preferir, pode ignorar este e-mail e continuar consultando seus agendamentos pelo telefone + código de confirmação. O link expira em 1 hora.</p>
+              <p style="color:#b8b8b8; font-size:13px;">BarberShop Agenda — sistema de agendamento para barbearias</p>
+            </div>
+            """;
+
+        return EnviarAsync(destinatarioEmail, destinatarioNome, "Sua conta está pronta — BarberShop Agenda", corpo);
+    }
+
     private async Task EnviarAsync(string destinatarioEmail, string destinatarioNome, string assunto, string corpoHtml)
     {
         var apiKey = Environment.GetEnvironmentVariable("BARBERSHOP_BREVO_API_KEY") ?? _configuration["Brevo:ApiKey"];

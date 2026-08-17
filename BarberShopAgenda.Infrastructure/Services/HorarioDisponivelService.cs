@@ -1,3 +1,4 @@
+using BarberShopAgenda.Domain;
 using BarberShopAgenda.Domain.Entities;
 using BarberShopAgenda.Domain.Interfaces;
 
@@ -23,7 +24,7 @@ public class HorarioDisponivelService : IHorarioDisponivelService
 
     public async Task<IEnumerable<TimeOnly>> ObterHorariosDisponiveisAsync(int barbeiroId, DateOnly data, int servicoId)
     {
-        if (data < DateOnly.FromDateTime(DateTime.Today)) return [];
+        if (data < DateOnly.FromDateTime(HorarioBrasil.Hoje)) return [];
 
         var barbeiro = await _barbeiroRepository.GetByIdAsync(barbeiroId);
         if (barbeiro is null || !barbeiro.Ativo) return [];
@@ -43,14 +44,14 @@ public class HorarioDisponivelService : IHorarioDisponivelService
             .Where(a => a.Status != StatusAgendamento.Cancelado && DateOnly.FromDateTime(a.DataHora) == data)
             .ToList();
 
-        var agora = DateTime.Now;
+        var agora = HorarioBrasil.Agora;
 
         return candidatos.Where(horario =>
         {
             var inicio = data.ToDateTime(horario);
             var fim = inicio.AddMinutes(servico.DuracaoMinutos);
 
-            if (data == DateOnly.FromDateTime(DateTime.Today) && inicio < agora) return false;
+            if (data == DateOnly.FromDateTime(HorarioBrasil.Hoje) && inicio < agora) return false;
 
             return !agendamentosDoDia.Any(a =>
             {

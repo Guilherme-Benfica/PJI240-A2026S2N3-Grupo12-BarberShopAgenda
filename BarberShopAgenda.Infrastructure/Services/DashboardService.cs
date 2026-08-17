@@ -1,3 +1,4 @@
+using BarberShopAgenda.Domain;
 using BarberShopAgenda.Domain.Entities;
 using BarberShopAgenda.Domain.Interfaces;
 
@@ -14,7 +15,7 @@ public class DashboardService : IDashboardService
 
     public async Task<ResumoDoDia> GetResumoHojeAsync()
     {
-        var agendamentosHoje = (await _agendamentoRepository.GetByDataAsync(DateTime.Today)).ToList();
+        var agendamentosHoje = (await _agendamentoRepository.GetByDataAsync(HorarioBrasil.Hoje)).ToList();
 
         var pendentes = agendamentosHoje.Count(a => a.Status == StatusAgendamento.Pendente);
         var confirmados = agendamentosHoje.Count(a => a.Status == StatusAgendamento.Confirmado);

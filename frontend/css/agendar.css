@@ -56,14 +56,11 @@
 }
 
 .topo-agendar-links {
-  position: absolute;
-  top: 0;
-  right: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   justify-content: flex-end;
-  max-width: 60%;
+  margin-bottom: 1.5rem;
 }
 
 .topo-agendar-login {
@@ -100,7 +97,6 @@
   letter-spacing: 0.01em;
   margin: 0 0 0.6rem;
   color: var(--cor-texto);
-  max-width: 80%;
 }
 
 .topo-agendar-titulo span {

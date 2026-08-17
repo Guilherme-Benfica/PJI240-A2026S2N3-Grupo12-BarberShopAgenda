@@ -13,4 +13,6 @@ public interface IEmailService
     Task EnviarVerificacaoEmailAsync(string destinatarioEmail, string destinatarioNome, string linkVerificacao);
 
     Task EnviarRedefinicaoSenhaAsync(string destinatarioEmail, string destinatarioNome, string linkRedefinicao);
+
+    Task EnviarBoasVindasContaAsync(string destinatarioEmail, string destinatarioNome, string linkDefinirSenha);
 }

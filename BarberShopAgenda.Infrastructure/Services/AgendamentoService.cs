@@ -1,3 +1,4 @@
+using BarberShopAgenda.Domain;
 using BarberShopAgenda.Domain.Entities;
 using BarberShopAgenda.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -11,6 +12,7 @@ public class AgendamentoService : IAgendamentoService
     private readonly IBarbeiroRepository _barbeiroRepository;
     private readonly IServicoRepository _servicoRepository;
     private readonly IEmailService _emailService;
+    private readonly IClienteContaService _clienteContaService;
     private readonly ILogger<AgendamentoService> _logger;
 
     public AgendamentoService(
@@ -19,6 +21,7 @@ public class AgendamentoService : IAgendamentoService
         IBarbeiroRepository barbeiroRepository,
         IServicoRepository servicoRepository,
         IEmailService emailService,
+        IClienteContaService clienteContaService,
         ILogger<AgendamentoService> logger)
     {
         _agendamentoRepository = agendamentoRepository;
@@ -26,6 +29,7 @@ public class AgendamentoService : IAgendamentoService
         _barbeiroRepository = barbeiroRepository;
         _servicoRepository = servicoRepository;
         _emailService = emailService;
+        _clienteContaService = clienteContaService;
         _logger = logger;
     }
 
@@ -53,7 +57,7 @@ public class AgendamentoService : IAgendamentoService
         var servico = await _servicoRepository.GetByIdAsync(servicoId)
             ?? throw new RegraNegocioException("Serviço não encontrado.");
 
-        if (dataHora < DateTime.Now.AddMinutes(-1))
+        if (dataHora < HorarioBrasil.Agora.AddMinutes(-1))
             throw new RegraNegocioException("Não é possível agendar em uma data/hora no passado.");
 
         var conflitoBarbeiro = await _agendamentoRepository.ExisteConflitoAsync(barbeiroId, dataHora, servico.DuracaoMinutos);
@@ -88,6 +92,15 @@ public class AgendamentoService : IAgendamentoService
             {
                 _logger.LogWarning(ex, "Falha ao enviar e-mail de confirmação para o agendamento {AgendamentoId}.", criado.Id);
             }
+        }
+
+        try
+        {
+            await _clienteContaService.GarantirContaVinculadaAsync(clienteId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Falha ao criar conta automática para o cliente {ClienteId}.", clienteId);
         }
 
         return criado;

@@ -32,7 +32,7 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IHorarioDisponivelService, HorarioDisponivelService>();
-builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+builder.Services.AddHttpClient<IEmailService, BrevoEmailService>();
 builder.Services.AddScoped<IClienteContaService, ClienteContaService>();
 
 // Chave JWT: variável de ambiente tem prioridade (mesmo padrão da connection string)

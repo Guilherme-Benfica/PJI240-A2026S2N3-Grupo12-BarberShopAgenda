@@ -53,7 +53,7 @@ O sistema tem como objetivo **facilitar o agendamento de serviços**, tornando a
 **Transversal**
 - Autenticação JWT com 3 papéis (Admin, Barbeiro, Cliente), cada um com seu próprio nível de acesso.
 - Verificação de conflito de horário por barbeiro **e** por cliente (impede que o mesmo cliente marque dois horários que se sobrepõem, mesmo com barbeiros diferentes).
-- E-mail transacional (confirmação de agendamento, verificação de conta, redefinição de senha) via SMTP — gratuito com provedores como o Brevo.
+- E-mail transacional (confirmação de agendamento, verificação de conta, redefinição de senha) via API HTTP da Brevo — gratuito, 300 e-mails/dia.
 - API REST documentada via Swagger/OpenAPI.
 - Interface seguindo diretrizes de acessibilidade WCAG 2.1.
 
@@ -66,7 +66,7 @@ O sistema tem como objetivo **facilitar o agendamento de serviços**, tornando a
 - **Banco de Dados:** MySQL 8.0
 - **ORM:** Entity Framework Core 8 com Pomelo (MySQL)
 - **Autenticação:** JWT (`Microsoft.AspNetCore.Authentication.JwtBearer`) + hash de senha via `PasswordHasher`
-- **E-mail:** MailKit (SMTP)
+- **E-mail:** API HTTP transacional da Brevo
 - **Testes:** xUnit + Moq
 - **Documentação da API:** Swagger / OpenAPI
 - **Controle de versão:** Git + GitHub
@@ -311,24 +311,26 @@ Em produção, defina a chave de assinatura do JWT via variável de ambiente `BA
 
 ## 📧 E-mail transacional (opcional)
 
-A API envia e-mails automaticamente (confirmação de agendamento com código, verificação de conta, redefinição de senha) via SMTP — sem custo, usando qualquer provedor. Se o SMTP não estiver configurado, tudo continua funcionando normalmente, só não envia o e-mail (fica um aviso no log).
+A API envia e-mails automaticamente (confirmação de agendamento com código, verificação de conta, redefinição de senha) pela **API HTTP transacional da Brevo** — sem custo (300 e-mails/dia grátis). Se a chave não estiver configurada, tudo continua funcionando normalmente, só não envia o e-mail (fica um aviso no log).
 
-Em uso: SMTP do Gmail (conta `barbershopagenda90@gmail.com`, com senha de app — exige verificação em duas etapas ativada na conta). Configurado em `appsettings.json`/`appsettings.Development.json`:
+> Optamos pela API HTTP (porta 443) em vez de SMTP (porta 587/465) porque hosts como o Render bloqueiam portas SMTP na camada de rede do plano gratuito — toda tentativa de conexão SMTP travava por ~100s até estourar timeout e falhar.
+
+Configurado em `appsettings.json`/`appsettings.Development.json`:
 
 ```json
-"Smtp": {
-  "Host": "smtp.gmail.com",
-  "Port": 587,
-  "Usuario": "barbershopagenda90@gmail.com",
+"Email": {
   "RemetenteEmail": "barbershopagenda90@gmail.com",
   "RemetenteNome": "BarberShop Agenda"
+},
+"Brevo": {
+  "ApiKey": ""
 },
 "Frontend": {
   "BaseUrl": "http://localhost:5500"
 }
 ```
 
-`Frontend:BaseUrl` é usado para montar os links de confirmação/redefinição enviados por e-mail. A senha SMTP **não** deve ir no `appsettings.json` — defina via variável de ambiente `BARBERSHOP_SMTP_SENHA` (mesmo padrão de `BARBERSHOP_CONNECTION_STRING`/`BARBERSHOP_JWT_KEY`).
+`Frontend:BaseUrl` é usado para montar os links de confirmação/redefinição enviados por e-mail. A chave da API **não** deve ir no `appsettings.json` — defina via variável de ambiente `BARBERSHOP_BREVO_API_KEY` (mesmo padrão de `BARBERSHOP_CONNECTION_STRING`/`BARBERSHOP_JWT_KEY`), gerada em [app.brevo.com/settings/keys/api](https://app.brevo.com/settings/keys/api).
 
 ---
 
@@ -384,7 +386,7 @@ Variáveis de ambiente configuradas no Render (nunca commitadas):
 |---|---|
 | `BARBERSHOP_CONNECTION_STRING` | Connection string do MySQL (Aiven), com `SslMode=Required` |
 | `BARBERSHOP_JWT_KEY` | Chave de assinatura dos tokens JWT em produção |
-| `BARBERSHOP_SMTP_SENHA` | Senha de app da conta de e-mail transacional |
+| `BARBERSHOP_BREVO_API_KEY` | Chave da API HTTP transacional da Brevo |
 
 > A instância gratuita do Render "dorme" após 15 minutos de inatividade — a primeira requisição depois disso pode levar até ~50s pra responder.
 

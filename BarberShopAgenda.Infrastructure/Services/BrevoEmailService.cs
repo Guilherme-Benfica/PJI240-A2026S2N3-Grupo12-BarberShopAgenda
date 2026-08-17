@@ -1,19 +1,27 @@
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using BarberShopAgenda.Domain.Interfaces;
-using MailKit.Net.Smtp;
-using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MimeKit;
 
 namespace BarberShopAgenda.Infrastructure.Services;
 
-public class SmtpEmailService : IEmailService
+/// <summary>
+/// Envia e-mails pela API HTTP transacional da Brevo (porta 443) em vez de SMTP —
+/// hosts como o Render bloqueiam as portas SMTP (25/465/587) na camada de rede do plano gratuito,
+/// o que fazia toda conexão SMTP travar por ~100s até estourar timeout e falhar.
+/// </summary>
+public class BrevoEmailService : IEmailService
 {
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<SmtpEmailService> _logger;
+    private const string EndpointEnvioEmail = "https://api.brevo.com/v3/smtp/email";
 
-    public SmtpEmailService(IConfiguration configuration, ILogger<SmtpEmailService> logger)
+    private readonly HttpClient _httpClient;
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<BrevoEmailService> _logger;
+
+    public BrevoEmailService(HttpClient httpClient, IConfiguration configuration, ILogger<BrevoEmailService> logger)
     {
+        _httpClient = httpClient;
         _configuration = configuration;
         _logger = logger;
     }
@@ -83,42 +91,45 @@ public class SmtpEmailService : IEmailService
 
     private async Task EnviarAsync(string destinatarioEmail, string destinatarioNome, string assunto, string corpoHtml)
     {
-        var host = _configuration["Smtp:Host"];
-        if (string.IsNullOrWhiteSpace(host))
+        var apiKey = Environment.GetEnvironmentVariable("BARBERSHOP_BREVO_API_KEY") ?? _configuration["Brevo:ApiKey"];
+        if (string.IsNullOrWhiteSpace(apiKey))
         {
-            _logger.LogInformation("SMTP não configurado — e-mail \"{Assunto}\" não enviado para {Email}.", assunto, destinatarioEmail);
+            _logger.LogInformation("Brevo não configurado — e-mail \"{Assunto}\" não enviado para {Email}.", assunto, destinatarioEmail);
             return;
         }
 
-        var porta = int.TryParse(_configuration["Smtp:Port"], out var p) ? p : 587;
-        var usuario = _configuration["Smtp:Usuario"];
-        var senha = Environment.GetEnvironmentVariable("BARBERSHOP_SMTP_SENHA") ?? _configuration["Smtp:Senha"];
-        var remetenteEmail = _configuration["Smtp:RemetenteEmail"] ?? usuario;
-        var remetenteNome = _configuration["Smtp:RemetenteNome"] ?? "BarberShop Agenda";
+        var remetenteEmail = _configuration["Email:RemetenteEmail"] ?? "barbershopagenda90@gmail.com";
+        var remetenteNome = _configuration["Email:RemetenteNome"] ?? "BarberShop Agenda";
 
-        var mensagem = new MimeMessage();
-        mensagem.From.Add(new MailboxAddress(remetenteNome, remetenteEmail));
-        mensagem.To.Add(new MailboxAddress(destinatarioNome, destinatarioEmail));
-        mensagem.Subject = assunto;
-        mensagem.Body = new TextPart("html") { Text = corpoHtml };
+        var payload = new
+        {
+            sender = new { name = remetenteNome, email = remetenteEmail },
+            to = new[] { new { email = destinatarioEmail, name = destinatarioNome } },
+            subject = assunto,
+            htmlContent = corpoHtml
+        };
 
-        using var client = new SmtpClient();
         try
         {
-            await client.ConnectAsync(host, porta, SecureSocketOptions.StartTls);
-            if (!string.IsNullOrWhiteSpace(usuario))
-                await client.AuthenticateAsync(usuario, senha);
+            using var request = new HttpRequestMessage(HttpMethod.Post, EndpointEnvioEmail)
+            {
+                Content = JsonContent.Create(payload)
+            };
+            request.Headers.Add("api-key", apiKey);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            await client.SendAsync(mensagem);
+            var resposta = await _httpClient.SendAsync(request);
+            if (!resposta.IsSuccessStatusCode)
+            {
+                var corpoResposta = await resposta.Content.ReadAsStringAsync();
+                _logger.LogWarning(
+                    "Falha ao enviar e-mail \"{Assunto}\" para {Email}. Status {Status}: {Corpo}",
+                    assunto, destinatarioEmail, resposta.StatusCode, corpoResposta);
+            }
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Falha ao enviar e-mail \"{Assunto}\" para {Email}.", assunto, destinatarioEmail);
-        }
-        finally
-        {
-            if (client.IsConnected)
-                await client.DisconnectAsync(true);
         }
     }
 }

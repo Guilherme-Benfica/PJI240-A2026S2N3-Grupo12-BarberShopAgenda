@@ -1,0 +1,40 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: barbershop-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-barbershop123}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-barbershop_agenda}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-barbershop123}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: barbershop-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      BARBERSHOP_CONNECTION_STRING: "Server=mysql;Port=3306;Database=${MYSQL_DATABASE:-barbershop_agenda};User=root;Password=${MYSQL_ROOT_PASSWORD:-barbershop123};"
+      BARBERSHOP_JWT_KEY: "${BARBERSHOP_JWT_KEY:-chave-padrao-de-desenvolvimento-troque-em-producao-32chars}"
+      Cors__AllowedOrigins__0: "http://localhost:5500"
+      Cors__AllowedOrigins__1: "http://127.0.0.1:5500"
+    ports:
+      - "5000:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:

@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BarberShopAgenda.API/BarberShopAgenda.API.csproj" />
+  <Project Path="BarberShopAgenda.Domain/BarberShopAgenda.Domain.csproj" />
+  <Project Path="BarberShopAgenda.Infrastructure/BarberShopAgenda.Infrastructure.csproj" />
+  <Project Path="BarberShopAgenda.Tests/BarberShopAgenda.Tests.csproj" />
+</Solution>

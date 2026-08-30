@@ -70,7 +70,7 @@ O sistema tem como objetivo **facilitar o agendamento de serviços**, tornando a
 - **Testes:** xUnit + Moq
 - **Documentação da API:** Swagger / OpenAPI
 - **Controle de versão:** Git + GitHub
-- **Nuvem:** Microsoft Azure (App Service + Azure Database for MySQL)
+- **Nuvem:** Render (API) + Aiven (MySQL) + GitHub Pages (frontend)
 - **Containerização:** Docker + Docker Compose
 
 ---

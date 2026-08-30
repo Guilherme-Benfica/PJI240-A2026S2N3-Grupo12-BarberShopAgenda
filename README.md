@@ -29,6 +29,18 @@ O sistema tem como objetivo **facilitar o agendamento de serviços**, tornando a
 
 ---
 
+## 📸 Screenshots
+
+| Agendamento (Cliente) | Login |
+|---|---|
+| ![Fluxo de agendamento](docs/screenshots/agendar.png) | ![Tela de login](docs/screenshots/login.png) |
+
+| Dashboard (Admin) | Agendamentos (Admin) | Barbeiros (Admin) |
+|---|---|---|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Agendamentos](docs/screenshots/agendamentos.png) | ![Barbeiros](docs/screenshots/barbeiros.png) |
+
+---
+
 ## ✅ Funcionalidades Principais
 
 **Cliente (público, sem cadastro obrigatório)**

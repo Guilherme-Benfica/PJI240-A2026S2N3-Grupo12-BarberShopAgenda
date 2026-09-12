@@ -17,7 +17,7 @@ Este é o repositório do Projeto Integrador da disciplina **PJI240 - Projeto In
 - Zildineia Conceicao Magri — RA 24228400
 
 **Polos:** Cabreúva, Iperó e Ibiúna
-**Orientadora:** Ana Carla de Paula Leite Almeida
+**Orientadora:** Paulo Roberto Sousa Dos Santos
 
 ---
 

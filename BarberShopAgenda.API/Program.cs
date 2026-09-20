@@ -19,7 +19,8 @@ var connectionString = Environment.GetEnvironmentVariable("BARBERSHOP_CONNECTION
     ?? throw new InvalidOperationException("Connection string não configurada.");
 
 builder.Services.AddDbContext<BarberShopContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21)))
+           .AddInterceptors(new Utf8mb4ConnectionInterceptor()));
 
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IBarbeiroRepository, BarbeiroRepository>();

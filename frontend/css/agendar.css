@@ -110,6 +110,17 @@
   max-width: 30ch;
 }
 
+.topo-agendar-info {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  color: var(--cor-texto-suave);
+}
+
 /* ---------- Indicador de etapas ---------- */
 .indicador-etapas {
   list-style: none;

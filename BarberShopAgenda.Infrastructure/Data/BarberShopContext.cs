@@ -129,11 +129,19 @@ public class BarberShopContext : DbContext
         );
 
         modelBuilder.Entity<Servico>().HasData(
-            new Servico { Id = 1, Nome = "Corte de Cabelo", Descricao = "Corte tradicional masculino", Preco = 40.00m, DuracaoMinutos = 30 },
-            new Servico { Id = 2, Nome = "Barba", Descricao = "Aparar e desenhar barba", Preco = 30.00m, DuracaoMinutos = 20 },
-            new Servico { Id = 3, Nome = "Corte + Barba", Descricao = "Combo corte de cabelo e barba", Preco = 60.00m, DuracaoMinutos = 50 },
-            new Servico { Id = 4, Nome = "Sobrancelha", Descricao = "Design de sobrancelha na navalha", Preco = 15.00m, DuracaoMinutos = 15 },
-            new Servico { Id = 5, Nome = "Pigmentação de Barba", Descricao = "Pigmentação para uniformizar a barba", Preco = 45.00m, DuracaoMinutos = 40 }
+            new Servico { Id = 1, Nome = "Corte", Descricao = "Corte tradicional masculino", Preco = 40.00m, DuracaoMinutos = 30 },
+            new Servico { Id = 2, Nome = "Barba", Descricao = "Aparar e desenhar barba", Preco = 40.00m, DuracaoMinutos = 20 },
+            new Servico { Id = 3, Nome = "Corte + Barba", Descricao = "Combo corte de cabelo e barba", Preco = 70.00m, DuracaoMinutos = 50 },
+            new Servico { Id = 4, Nome = "Sobrancelha", Descricao = "Design de sobrancelha na navalha", Preco = 10.00m, DuracaoMinutos = 15 },
+            new Servico { Id = 5, Nome = "Pigmentação", Descricao = "Pigmentação para barba ou cabelo — valor a partir de R$ 25,00, pode variar conforme o serviço", Preco = 25.00m, DuracaoMinutos = 40 },
+            new Servico { Id = 6, Nome = "Corte + Sobrancelha", Descricao = "Combo corte de cabelo e sobrancelha", Preco = 45.00m, DuracaoMinutos = 40 },
+            new Servico { Id = 7, Nome = "Pezinho", Descricao = "Acabamento do corte (pezinho)", Preco = 20.00m, DuracaoMinutos = 15 },
+            new Servico { Id = 8, Nome = "Barba + Pezinho", Descricao = "Combo barba e acabamento do corte", Preco = 50.00m, DuracaoMinutos = 30 },
+            new Servico { Id = 9, Nome = "Luzes", Descricao = "Mechas/luzes no cabelo", Preco = 150.00m, DuracaoMinutos = 120 },
+            new Servico { Id = 10, Nome = "Platinado", Descricao = "Descoloração completa do cabelo", Preco = 180.00m, DuracaoMinutos = 150 },
+            new Servico { Id = 11, Nome = "Hidratação", Descricao = "Hidratação capilar", Preco = 20.00m, DuracaoMinutos = 30 },
+            new Servico { Id = 12, Nome = "Cera Nasal", Descricao = "Remoção de pelos nasais com cera", Preco = 20.00m, DuracaoMinutos = 10 },
+            new Servico { Id = 13, Nome = "Relaxamento", Descricao = "Relaxamento capilar", Preco = 25.00m, DuracaoMinutos = 30 }
         );
     }
 }

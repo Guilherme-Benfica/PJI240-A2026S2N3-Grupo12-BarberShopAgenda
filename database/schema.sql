@@ -121,8 +121,16 @@ INSERT INTO Barbeiros (Nome, Especialidade, Ativo, UsuarioId, HorarioInicioManha
   ('Marcos Souza', 'Cortes modernos e degradê', 1, 4, '09:00', '12:00', '13:00', '19:00', 63);
 
 INSERT INTO Servicos (Nome, Descricao, Preco, DuracaoMinutos) VALUES
-  ('Corte de Cabelo', 'Corte tradicional masculino', 40.00, 30),
-  ('Barba', 'Aparar e desenhar barba', 30.00, 20),
-  ('Corte + Barba', 'Combo corte de cabelo e barba', 60.00, 50),
-  ('Sobrancelha', 'Design de sobrancelha na navalha', 15.00, 15),
-  ('Pigmentação de Barba', 'Pigmentação para uniformizar a barba', 45.00, 40);
+  ('Corte', 'Corte tradicional masculino', 40.00, 30),
+  ('Barba', 'Aparar e desenhar barba', 40.00, 20),
+  ('Corte + Barba', 'Combo corte de cabelo e barba', 70.00, 50),
+  ('Corte + Sobrancelha', 'Combo corte de cabelo e sobrancelha', 45.00, 40),
+  ('Sobrancelha', 'Design de sobrancelha na navalha', 10.00, 15),
+  ('Pezinho', 'Acabamento do corte (pezinho)', 20.00, 15),
+  ('Barba + Pezinho', 'Combo barba e acabamento do corte', 50.00, 30),
+  ('Luzes', 'Mechas/luzes no cabelo', 150.00, 120),
+  ('Platinado', 'Descoloração completa do cabelo', 180.00, 150),
+  ('Hidratação', 'Hidratação capilar', 20.00, 30),
+  ('Cera Nasal', 'Remoção de pelos nasais com cera', 20.00, 10),
+  ('Pigmentação', 'Pigmentação para barba ou cabelo — valor a partir de R$ 25,00, pode variar conforme o serviço', 25.00, 40),
+  ('Relaxamento', 'Relaxamento capilar', 25.00, 30);

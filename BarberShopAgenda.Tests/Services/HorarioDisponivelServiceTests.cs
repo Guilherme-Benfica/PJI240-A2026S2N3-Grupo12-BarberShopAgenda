@@ -88,4 +88,28 @@ public class HorarioDisponivelServiceTests
 
         Assert.Empty(horarios);
     }
+
+    [Fact]
+    public async Task ObterHorariosDisponiveisAsync_ComSabadoHorarioFim_DeveExcluirHorariosApósOFechamentoSóNoSábado()
+    {
+        var (service, context) = CriarServicoComBanco(nameof(ObterHorariosDisponiveisAsync_ComSabadoHorarioFim_DeveExcluirHorariosApósOFechamentoSóNoSábado));
+
+        var barbeiro = await context.Barbeiros.FindAsync(1);
+        barbeiro!.HorarioFimTarde = new TimeOnly(19, 0);
+        barbeiro.SabadoHorarioFim = new TimeOnly(16, 0);
+        await context.SaveChangesAsync();
+
+        var proximoSabado = DateOnly.FromDateTime(DateTime.Today.AddDays(7));
+        while (proximoSabado.DayOfWeek != DayOfWeek.Saturday)
+            proximoSabado = proximoSabado.AddDays(1);
+        var proximaSextaOuOutroDia = proximoSabado.AddDays(-1);
+
+        var horariosSabado = (await service.ObterHorariosDisponiveisAsync(1, proximoSabado, 1)).ToList();
+        var horariosOutroDia = (await service.ObterHorariosDisponiveisAsync(1, proximaSextaOuOutroDia, 1)).ToList();
+
+        Assert.Contains(new TimeOnly(13, 0), horariosSabado);
+        Assert.DoesNotContain(new TimeOnly(16, 0), horariosSabado);
+        Assert.DoesNotContain(new TimeOnly(18, 0), horariosSabado);
+        Assert.Contains(new TimeOnly(18, 0), horariosOutroDia); // dia útil continua até as 19h normalmente
+    }
 }

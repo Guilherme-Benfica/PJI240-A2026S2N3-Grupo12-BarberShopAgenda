@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS Barbeiros (
   HorarioInicioTarde TIME NULL,
   HorarioFimTarde TIME NULL,
   DiasTrabalho TINYINT UNSIGNED NOT NULL DEFAULT 63,
+  SabadoHorarioFim TIME NULL,
   FeriasInicio DATE NULL,
   FeriasFim DATE NULL,
   CONSTRAINT FK_Barbeiros_Usuarios FOREIGN KEY (UsuarioId) REFERENCES Usuarios(Id) ON DELETE SET NULL,
@@ -115,10 +116,10 @@ INSERT INTO Usuarios (Id, Nome, Email, SenhaHash, Papel, Ativo, DataCadastro) VA
   (3, 'João Pereira', 'joao.pereira@barbershop.com', 'AQAAAAIAAYagAAAAEBy7KwJ9F4W7DZzBXQle0B0NrCquufmoJIbVSNJ30VQBaMVTzhYjtGkHZ05KR1r19w==', 1, 1, '2026-01-01 00:00:00'),
   (4, 'Marcos Souza', 'marcos.souza@barbershop.com', 'AQAAAAIAAYagAAAAEFeTriNcRDe10YZZpLPfi+s+UfCm1EwRMEbHlX355or+Y+IESPd6txvMMI7ajmtkqQ==', 1, 1, '2026-01-01 00:00:00');
 
-INSERT INTO Barbeiros (Nome, Especialidade, Ativo, UsuarioId, HorarioInicioManha, HorarioFimManha, HorarioInicioTarde, HorarioFimTarde, DiasTrabalho) VALUES
-  ('Carlos Silva', 'Cortes clássicos', 1, 2, '09:00', '12:00', '13:00', '19:00', 63),
-  ('João Pereira', 'Barba e navalha', 1, 3, '09:00', '12:00', '13:00', '19:00', 63),
-  ('Marcos Souza', 'Cortes modernos e degradê', 1, 4, '09:00', '12:00', '13:00', '19:00', 63);
+INSERT INTO Barbeiros (Nome, Especialidade, Ativo, UsuarioId, HorarioInicioManha, HorarioFimManha, HorarioInicioTarde, HorarioFimTarde, DiasTrabalho, SabadoHorarioFim) VALUES
+  ('Carlos Silva', 'Cortes clássicos', 1, 2, '09:00', '12:00', '13:00', '19:00', 63, '16:00'),
+  ('João Pereira', 'Barba e navalha', 1, 3, '09:00', '12:00', '13:00', '19:00', 63, '16:00'),
+  ('Marcos Souza', 'Cortes modernos e degradê', 1, 4, '09:00', '12:00', '13:00', '19:00', 63, '16:00');
 
 INSERT INTO Servicos (Nome, Descricao, Preco, DuracaoMinutos) VALUES
   ('Corte', 'Corte tradicional masculino', 40.00, 30),

@@ -77,25 +77,29 @@ public class BarberShopContext : DbContext
         var horarioFimManha = new TimeOnly(12, 0);
         var horarioInicioTarde = new TimeOnly(13, 0);
         var horarioFimTarde = new TimeOnly(19, 0);
+        var sabadoHorarioFim = new TimeOnly(16, 0);
 
         modelBuilder.Entity<Barbeiro>().HasData(
             new Barbeiro
             {
                 Id = 1, Nome = "Carlos Silva", Especialidade = "Cortes clássicos", Ativo = true, UsuarioId = 2,
                 HorarioInicioManha = horarioInicioManha, HorarioFimManha = horarioFimManha,
-                HorarioInicioTarde = horarioInicioTarde, HorarioFimTarde = horarioFimTarde, DiasTrabalho = 63
+                HorarioInicioTarde = horarioInicioTarde, HorarioFimTarde = horarioFimTarde, DiasTrabalho = 63,
+                SabadoHorarioFim = sabadoHorarioFim
             },
             new Barbeiro
             {
                 Id = 2, Nome = "João Pereira", Especialidade = "Barba e navalha", Ativo = true, UsuarioId = 3,
                 HorarioInicioManha = horarioInicioManha, HorarioFimManha = horarioFimManha,
-                HorarioInicioTarde = horarioInicioTarde, HorarioFimTarde = horarioFimTarde, DiasTrabalho = 63
+                HorarioInicioTarde = horarioInicioTarde, HorarioFimTarde = horarioFimTarde, DiasTrabalho = 63,
+                SabadoHorarioFim = sabadoHorarioFim
             },
             new Barbeiro
             {
                 Id = 3, Nome = "Marcos Souza", Especialidade = "Cortes modernos e degradê", Ativo = true, UsuarioId = 4,
                 HorarioInicioManha = horarioInicioManha, HorarioFimManha = horarioFimManha,
-                HorarioInicioTarde = horarioInicioTarde, HorarioFimTarde = horarioFimTarde, DiasTrabalho = 63
+                HorarioInicioTarde = horarioInicioTarde, HorarioFimTarde = horarioFimTarde, DiasTrabalho = 63,
+                SabadoHorarioFim = sabadoHorarioFim
             }
         );
 

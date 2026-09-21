@@ -43,6 +43,7 @@ public class BarbeiroRepository : IBarbeiroRepository
         existente.Nome = barbeiro.Nome;
         existente.Especialidade = barbeiro.Especialidade;
         existente.Ativo = barbeiro.Ativo;
+        existente.SabadoHorarioFim = barbeiro.SabadoHorarioFim;
         existente.FeriasInicio = barbeiro.FeriasInicio;
         existente.FeriasFim = barbeiro.FeriasFim;
 

@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const campoAtivo = document.getElementById("barbeiro-ativo");
   const campoFeriasInicio = document.getElementById("barbeiro-ferias-inicio");
   const campoFeriasFim = document.getElementById("barbeiro-ferias-fim");
+  const campoSabadoFim = document.getElementById("barbeiro-sabado-fim");
   const campoEmail = document.getElementById("barbeiro-email");
   const campoSenha = document.getElementById("barbeiro-senha");
   const linhaContaAcesso = document.getElementById("linha-conta-acesso");
@@ -36,6 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
       nome: campoNome.value.trim(),
       especialidade: campoEspecialidade.value.trim() || null,
       ativo: campoAtivo.value === "true",
+      sabadoHorarioFim: campoSabadoFim.value
+        ? (campoSabadoFim.value.length === 5 ? `${campoSabadoFim.value}:00` : campoSabadoFim.value)
+        : null,
       feriasInicio: campoFeriasInicio.value || null,
       feriasFim: campoFeriasFim.value || null,
     };
@@ -183,6 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
     campoNome.value = barbeiro.nome;
     campoEspecialidade.value = barbeiro.especialidade || "";
     campoAtivo.value = String(barbeiro.ativo);
+    campoSabadoFim.value = (barbeiro.sabadoHorarioFim || "").slice(0, 5);
     campoFeriasInicio.value = barbeiro.feriasInicio || "";
     campoFeriasFim.value = barbeiro.feriasFim || "";
     mostrarCamposDeConta(false);

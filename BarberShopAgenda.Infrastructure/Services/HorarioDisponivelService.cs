@@ -38,6 +38,8 @@ public class HorarioDisponivelService : IHorarioDisponivelService
         if ((barbeiro.DiasTrabalho & diaBit) == 0) return [];
 
         var candidatos = GerarCandidatos(barbeiro);
+        if (data.DayOfWeek == DayOfWeek.Saturday && barbeiro.SabadoHorarioFim is not null)
+            candidatos = candidatos.Where(h => h < barbeiro.SabadoHorarioFim.Value).ToList();
         if (candidatos.Count == 0) return [];
 
         var agendamentosDoDia = (await _agendamentoRepository.GetByBarbeiroAsync(barbeiroId))

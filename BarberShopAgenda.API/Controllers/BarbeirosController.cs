@@ -33,6 +33,7 @@ public class BarbeirosController : ControllerBase
         HorarioInicioTarde = b.HorarioInicioTarde,
         HorarioFimTarde = b.HorarioFimTarde,
         DiasTrabalho = b.DiasTrabalho,
+        SabadoHorarioFim = b.SabadoHorarioFim,
         FeriasInicio = b.FeriasInicio,
         FeriasFim = b.FeriasFim,
         Email = b.Usuario?.Email,
@@ -102,6 +103,7 @@ public class BarbeirosController : ControllerBase
             HorarioInicioTarde = dto.HorarioInicioTarde,
             HorarioFimTarde = dto.HorarioFimTarde,
             DiasTrabalho = dto.DiasTrabalho,
+            SabadoHorarioFim = dto.SabadoHorarioFim,
             FeriasInicio = dto.FeriasInicio,
             FeriasFim = dto.FeriasFim,
             UsuarioId = usuarioCriado.Id
@@ -125,6 +127,7 @@ public class BarbeirosController : ControllerBase
             Nome = dto.Nome,
             Especialidade = dto.Especialidade,
             Ativo = dto.Ativo,
+            SabadoHorarioFim = dto.SabadoHorarioFim,
             FeriasInicio = dto.FeriasInicio,
             FeriasFim = dto.FeriasFim
         };

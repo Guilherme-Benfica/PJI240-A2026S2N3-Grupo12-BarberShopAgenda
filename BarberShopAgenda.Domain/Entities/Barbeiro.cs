@@ -22,6 +22,9 @@ public class Barbeiro
     public TimeOnly? HorarioInicioTarde { get; set; }
     public TimeOnly? HorarioFimTarde { get; set; }
 
+    /// <summary>Fim do expediente aos sábados, quando diferente do resto da semana (ex.: fecha mais cedo). Nulo = mesmo horário dos outros dias de trabalho.</summary>
+    public TimeOnly? SabadoHorarioFim { get; set; }
+
     /// <summary>Bitmask dos dias de trabalho: segunda=1, terça=2, quarta=4, quinta=8, sexta=16, sábado=32, domingo=64.</summary>
     public byte DiasTrabalho { get; set; } = 63;
 

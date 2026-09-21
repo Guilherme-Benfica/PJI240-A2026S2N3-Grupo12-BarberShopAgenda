@@ -18,6 +18,9 @@ public class BarbeiroCreateDTO
     public TimeOnly? HorarioFimTarde { get; set; }
     public byte DiasTrabalho { get; set; } = 63;
 
+    /// <summary>Fim do expediente aos sábados, quando diferente do resto da semana. Nulo = mesmo horário dos outros dias.</summary>
+    public TimeOnly? SabadoHorarioFim { get; set; }
+
     public DateOnly? FeriasInicio { get; set; }
     public DateOnly? FeriasFim { get; set; }
 
@@ -32,6 +35,7 @@ public class BarbeiroCreateDTO
 /// <summary>
 /// Atualiza os dados de agenda editáveis pelo admin. Não inclui horários/dias de trabalho —
 /// esses só são definidos na criação, e não há tela hoje para editá-los depois (evita zerá-los sem querer).
+/// SabadoHorarioFim é exceção: é editável a qualquer momento, pois o formulário sempre envia o valor atual.
 /// </summary>
 public class BarbeiroUpdateDTO
 {
@@ -42,6 +46,9 @@ public class BarbeiroUpdateDTO
     public string? Especialidade { get; set; }
 
     public bool Ativo { get; set; } = true;
+
+    /// <summary>Fim do expediente aos sábados, quando diferente do resto da semana. Nulo = mesmo horário dos outros dias.</summary>
+    public TimeOnly? SabadoHorarioFim { get; set; }
 
     public DateOnly? FeriasInicio { get; set; }
     public DateOnly? FeriasFim { get; set; }
@@ -61,6 +68,7 @@ public class BarbeiroResponseDTO
     public TimeOnly? HorarioInicioTarde { get; set; }
     public TimeOnly? HorarioFimTarde { get; set; }
     public byte DiasTrabalho { get; set; }
+    public TimeOnly? SabadoHorarioFim { get; set; }
     public DateOnly? FeriasInicio { get; set; }
     public DateOnly? FeriasFim { get; set; }
     public string? Email { get; set; }

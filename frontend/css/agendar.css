@@ -22,10 +22,10 @@
 
 .pagina-agendar main {
   max-width: 640px;
-  padding-top: 1.5rem;
+  padding: 0;
 }
 
-/* ---------- Topo / hero ---------- */
+/* ---------- Topo / identidade da barbearia ---------- */
 .topo-agendar {
   position: relative;
   overflow: hidden;
@@ -33,7 +33,7 @@
     radial-gradient(120% 140% at 15% -20%, rgba(212, 175, 55, 0.22), transparent 55%),
     #000;
   border-bottom: 1px solid var(--cor-borda);
-  padding: 2.75rem 1.5rem 2.25rem;
+  padding: 1rem 1.25rem 0.9rem;
 }
 
 .topo-agendar-faixa {
@@ -55,22 +55,96 @@
   margin: 0 auto;
 }
 
+.topo-identidade {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.topo-logo {
+  flex-shrink: 0;
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(155deg, var(--cor-icone-servico-de), var(--cor-icone-servico-para));
+  border: 1px solid var(--cor-dourado);
+  color: var(--cor-dourado);
+}
+
+.topo-identidade-texto {
+  min-width: 0;
+}
+
+.topo-agendar-titulo {
+  font-family: var(--fonte-display);
+  font-weight: 400;
+  font-size: 1.75rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  margin: 0;
+  color: var(--cor-texto);
+}
+
+.topo-agendar-titulo span {
+  color: var(--cor-dourado);
+}
+
+.topo-status {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+}
+
+.status-aberto {
+  color: var(--cor-sucesso);
+  font-weight: 700;
+}
+
+.status-fechado {
+  color: var(--cor-erro);
+  font-weight: 700;
+}
+
+.topo-agendar-subtitulo {
+  margin: 0.7rem 0 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+  max-width: 46ch;
+}
+
+.topo-endereco {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+  color: var(--cor-texto-suave);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
+.topo-endereco:hover,
+.topo-endereco:focus-visible {
+  color: var(--cor-dourado);
+}
+
 .topo-agendar-links {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  justify-content: flex-end;
-  margin-bottom: 1.5rem;
+  margin-top: 0.85rem;
 }
 
 .topo-agendar-login {
   color: var(--cor-texto-suave);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   text-decoration: none;
   border: 1px solid var(--cor-borda);
   border-radius: 999px;
-  padding: 0.4rem 0.85rem;
+  padding: 0.35rem 0.8rem;
   white-space: nowrap;
 }
 
@@ -80,54 +154,43 @@
   color: var(--cor-dourado);
 }
 
-.topo-agendar-eyebrow {
-  margin: 0 0 0.35rem;
-  color: var(--cor-dourado);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.topo-agendar-titulo {
-  font-family: var(--fonte-display);
-  font-weight: 400;
-  font-size: 3rem;
-  line-height: 0.95;
-  letter-spacing: 0.01em;
-  margin: 0 0 0.6rem;
-  color: var(--cor-texto);
-}
-
-.topo-agendar-titulo span {
-  color: var(--cor-dourado);
-}
-
-.topo-agendar-subtitulo {
-  margin: 0;
-  color: var(--cor-texto-suave);
-  font-size: 1rem;
-  max-width: 30ch;
-}
-
-.topo-agendar-info {
-  list-style: none;
-  margin: 1rem 0 0;
-  padding: 0;
+/* ---------- Abas ---------- */
+.abas {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  font-size: 0.82rem;
-  color: var(--cor-texto-suave);
+  background-color: var(--cor-fundo);
+  border-bottom: 1px solid var(--cor-borda);
+  max-width: 640px;
+  margin: 0 auto;
 }
 
-/* ---------- Indicador de etapas ---------- */
+.aba {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.85rem 0.4rem;
+  cursor: pointer;
+}
+
+.aba.aba-ativa {
+  color: var(--cor-dourado);
+  border-bottom-color: var(--cor-dourado);
+}
+
+/* ---------- Indicador de etapas (compacto, uma linha) ---------- */
 .indicador-etapas {
   list-style: none;
   display: flex;
   gap: 0.4rem;
-  padding: 0 1.5rem;
-  margin: 1.5rem auto 1.75rem;
+  padding: 0.9rem 1.25rem 0;
+  margin: 0 auto;
   max-width: 640px;
 }
 
@@ -135,12 +198,15 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   color: var(--cor-texto-suave);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding-bottom: 0.6rem;
+  padding: 0 0 0.5rem;
+  border: none;
+  border-radius: 0;
   border-bottom: 2px solid var(--cor-borda);
+  white-space: nowrap;
 }
 
 .indicador-etapas li.etapa-ativa {
@@ -152,37 +218,63 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
   border-radius: 50%;
   background-color: var(--cor-fundo-elevado);
   border: 1px solid currentColor;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 /* ---------- Seções ---------- */
 .secao-agendar {
-  padding: 0 1.5rem 2rem;
+  padding: 1.25rem 1.25rem 2rem;
 }
 
 .secao-agendar h2 {
   font-family: var(--fonte-display);
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 400;
   letter-spacing: 0.01em;
-  margin: 0 0 1rem;
+  margin: 0 0 0.9rem;
 }
 
 .subtitulo-secao {
   color: var(--cor-texto);
-  font-size: 1rem;
-  margin: 1.5rem 0 0.75rem;
+  font-size: 0.95rem;
+  margin: 1.4rem 0 0.7rem;
+}
+
+/* ---------- Aviso de profissional pré-escolhido ---------- */
+.aviso-profissional {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background-color: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--cor-dourado);
+  border-radius: var(--raio);
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+
+.botao-texto-inline {
+  background: none;
+  border: none;
+  color: var(--cor-dourado);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
 }
 
 /* ---------- Busca de serviço ---------- */
 .campo-busca {
   position: relative;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .icone-busca {
@@ -210,8 +302,8 @@
 .item-servico {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  padding: 0.9rem 0;
+  gap: 0.8rem;
+  padding: 0.85rem 0;
   border-bottom: 1px solid var(--cor-borda);
   background: none;
   border-left: none;
@@ -229,8 +321,8 @@
 
 .avatar-servico {
   flex-shrink: 0;
-  width: 3rem;
-  height: 3rem;
+  width: 2.8rem;
+  height: 2.8rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -239,7 +331,7 @@
   border: 1px solid var(--cor-borda);
   color: var(--cor-dourado);
   font-family: var(--fonte-display);
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .item-servico-info {
@@ -248,8 +340,9 @@
 }
 
 .item-servico-nome {
+  display: block;
   font-weight: 700;
-  margin: 0 0 0.15rem;
+  margin-bottom: 0.15rem;
 }
 
 .item-servico-detalhes {
@@ -257,7 +350,7 @@
   align-items: center;
   gap: 0.7rem;
   color: var(--cor-texto-suave);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 .item-servico-preco {
@@ -277,44 +370,145 @@
   color: #000;
   border: none;
   border-radius: var(--raio);
-  padding: 0.55rem 1rem;
+  padding: 0.55rem 0.95rem;
   font-weight: 700;
   font-size: 0.85rem;
 }
 
-.item-servico-selecionar:hover {
+.item-servico:hover .item-servico-selecionar {
   background-color: var(--cor-dourado-hover);
 }
 
-.item-servico.servico-ativo {
+/* ---------- Lista de profissionais (aba) ---------- */
+.lista-profissionais {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cartao-profissional {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
   background-color: var(--cor-fundo-cartao);
-  margin: 0 -1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  border: 1px solid var(--cor-borda);
   border-radius: var(--raio);
+  padding: 0.9rem;
+}
+
+.cartao-profissional-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cartao-profissional-nome {
+  margin: 0;
+  font-weight: 700;
+}
+
+.cartao-profissional-especialidade {
+  margin: 0.15rem 0 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.83rem;
+}
+
+.avatar-profissional-grande {
+  width: 3rem;
+  height: 3rem;
+  font-size: 1rem;
+}
+
+.botao-agendar-com {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ---------- Aba Detalhes ---------- */
+.cartao-detalhe {
+  background-color: var(--cor-fundo-cartao);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cartao-detalhe-titulo {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  color: var(--cor-dourado);
+}
+
+.cartao-detalhe-texto {
+  margin: 0 0 0.8rem;
+  color: var(--cor-texto-suave);
+}
+
+.botao-bloco {
+  display: block;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+}
+
+.lista-horario-funcionamento {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.88rem;
+}
+
+.lista-horario-funcionamento li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--cor-borda);
+  color: var(--cor-texto-suave);
+}
+
+.lista-horario-funcionamento li:last-child {
+  border-bottom: none;
+}
+
+.lista-horario-funcionamento li.dia-de-hoje {
+  color: var(--cor-texto);
+  font-weight: 700;
+}
+
+.lista-como-funciona {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--cor-texto-suave);
+  font-size: 0.88rem;
+}
+
+.lista-como-funciona li {
+  margin-bottom: 0.4rem;
 }
 
 /* ---------- Resumo do serviço escolhido ---------- */
 .resumo-servico-escolhido {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 0.8rem;
   background-color: var(--cor-fundo-cartao);
   border: 1px solid var(--cor-borda);
   border-left: 3px solid var(--cor-dourado);
   border-radius: var(--raio);
-  padding: 0.85rem 1rem;
-  margin-bottom: 1.5rem;
+  padding: 0.8rem 0.9rem;
+  margin-bottom: 1.25rem;
 }
 
 .resumo-servico-nome {
+  flex: 1;
+  min-width: 0;
   font-weight: 700;
 }
 
 .resumo-servico-preco {
   color: var(--cor-sucesso);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 400;
 }
 
 .resumo-servico-trocar {
@@ -325,15 +519,17 @@
   font-size: 0.85rem;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ---------- Tira de datas ---------- */
 .tira-datas {
   display: flex;
-  gap: 0.6rem;
+  gap: 0.5rem;
   overflow-x: auto;
-  padding: 0.25rem 0.1rem 0.75rem;
+  padding: 0.25rem 0.1rem 0.6rem;
   scrollbar-width: thin;
+  scroll-snap-type: x proximity;
 }
 
 .dia-data {
@@ -341,18 +537,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.35rem;
-  width: 3.4rem;
-  padding: 0.6rem 0;
+  gap: 0.2rem;
+  width: 3.3rem;
+  padding: 0.5rem 0;
   border-radius: var(--raio);
   border: 1px solid transparent;
   background: none;
   color: var(--cor-texto);
   cursor: pointer;
+  scroll-snap-align: start;
 }
 
 .dia-data-semana {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--cor-texto-suave);
   text-transform: uppercase;
 }
@@ -365,12 +562,22 @@
   height: 2.1rem;
   border-radius: 50%;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.02rem;
+}
+
+.dia-data-mes {
+  font-size: 0.62rem;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
 }
 
 .dia-data.dia-selecionado .dia-data-numero {
   background-color: var(--cor-dourado);
   color: #000;
+}
+
+.dia-data.dia-fechado {
+  opacity: 0.45;
 }
 
 .dia-data:hover:not(.dia-selecionado) .dia-data-numero {
@@ -390,7 +597,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
   width: 4.4rem;
   background: none;
   border: none;
@@ -399,8 +606,8 @@
 }
 
 .avatar-profissional {
-  width: 3.4rem;
-  height: 3.4rem;
+  width: 3.3rem;
+  height: 3.3rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -409,7 +616,8 @@
   border: 2px solid transparent;
   color: var(--cor-texto);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
+  flex-shrink: 0;
 }
 
 .item-profissional.profissional-selecionado {
@@ -421,14 +629,14 @@
 }
 
 .item-profissional-nome {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   text-align: center;
   line-height: 1.2;
 }
 
 /* ---------- Horários ---------- */
 .bloco-horarios {
-  margin-top: 1.25rem;
+  margin-top: 1.1rem;
 }
 
 .dica-horarios {
@@ -438,19 +646,21 @@
   border-radius: var(--raio);
   padding: 1rem;
   text-align: center;
+  font-size: 0.9rem;
 }
 
 .periodo-horarios + .periodo-horarios {
-  margin-top: 1.5rem;
+  margin-top: 1.4rem;
 }
 
 .periodo-horarios-cabecalho {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.7rem;
   color: var(--cor-texto);
   font-weight: 700;
+  font-size: 0.92rem;
 }
 
 .periodo-horarios-linha {
@@ -462,7 +672,7 @@
 .periodo-horarios-contagem {
   color: var(--cor-texto-suave);
   font-weight: 400;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   background-color: var(--cor-fundo-elevado);
   border-radius: 999px;
   padding: 0.15rem 0.6rem;
@@ -470,25 +680,21 @@
 
 .grade-horarios {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
 }
 
 .horario-slot {
   background-color: var(--cor-fundo-cartao);
   border: 1px solid var(--cor-dourado);
   color: var(--cor-texto);
-  padding: 0.65rem;
+  padding: 0.7rem 0.2rem;
   border-radius: var(--raio);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .horario-slot:hover {
-  background-color: var(--cor-fundo-elevado);
-}
-
-.horario-slot.selecionado {
   background-color: var(--cor-dourado);
   color: #000;
 }
@@ -511,14 +717,14 @@
   z-index: 50;
   max-width: 640px;
   margin: 0 auto;
-  max-height: 90vh;
+  max-height: 92vh;
   overflow-y: auto;
   background-color: var(--cor-fundo-cartao);
   border: 1px solid var(--cor-borda);
   border-bottom: none;
   border-radius: 20px 20px 0 0;
   box-shadow: var(--sombra-elevacao);
-  padding: 0.75rem 1.5rem 2rem;
+  padding: 0.75rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
   animation: agendar-subir 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -537,7 +743,7 @@
   height: 4px;
   background-color: var(--cor-borda);
   border-radius: 999px;
-  margin: 0 auto 1rem;
+  margin: 0 auto 0.9rem;
 }
 
 .sheet-cabecalho {
@@ -545,13 +751,13 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.9rem;
 }
 
 .sheet-marca {
   margin: 0;
   color: var(--cor-texto-suave);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
 }
 
@@ -562,7 +768,7 @@
 .sheet-data {
   margin: 0.1rem 0 0;
   font-family: var(--fonte-display);
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 400;
 }
 
@@ -581,11 +787,11 @@
 .sheet-resumo {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
+  gap: 0.8rem;
   background-color: var(--cor-fundo-elevado);
   border-radius: var(--raio);
-  padding: 0.9rem;
-  margin-bottom: 1rem;
+  padding: 0.85rem;
+  margin-bottom: 0.9rem;
 }
 
 .sheet-resumo-info {
@@ -595,16 +801,13 @@
 
 .sheet-resumo-servico {
   font-weight: 700;
-  margin: 0 0 0.25rem;
+  margin: 0 0 0.2rem;
 }
 
 .sheet-resumo-barbeiro {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
   color: var(--cor-texto-suave);
-  font-size: 0.85rem;
-  margin: 0 0 0.25rem;
+  font-size: 0.83rem;
+  margin: 0 0 0.2rem;
 }
 
 .sheet-resumo-preco {
@@ -616,14 +819,14 @@
 .sheet-resumo-quando {
   text-align: right;
   color: var(--cor-texto-suave);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   flex-shrink: 0;
 }
 
 .sheet-resumo-quando strong {
   display: block;
   color: var(--cor-texto);
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .sheet-toggle {
@@ -634,11 +837,11 @@
   background-color: rgba(224, 168, 59, 0.08);
   border: 1px solid var(--cor-pendente);
   border-radius: var(--raio);
-  padding: 0.75rem 1rem;
-  margin-bottom: 1.25rem;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 1rem;
   color: var(--cor-pendente);
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   cursor: pointer;
 }
 
@@ -687,12 +890,39 @@
 }
 
 #form-confirmacao .campo {
+  margin-bottom: 0.9rem;
+}
+
+.campo-observacao {
   margin-bottom: 1rem;
+}
+
+.campo-observacao summary {
+  cursor: pointer;
+  color: var(--cor-texto-suave);
+  font-size: 0.88rem;
+  padding: 0.35rem 0;
+}
+
+.campo-observacao textarea {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* Mantém o botão de confirmar sempre à vista, mesmo com o teclado/rolagem da sheet. */
+.sheet-acoes {
+  position: sticky;
+  z-index: 1;
+  bottom: calc(-1.5rem - env(safe-area-inset-bottom, 0px));
+  background-color: var(--cor-fundo-cartao);
+  border-top: 1px solid var(--cor-borda);
+  margin: 0.5rem -1.25rem 0;
+  padding: 0.75rem 1.25rem calc(0.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 .botao-grande {
   width: 100%;
-  padding: 0.9rem;
+  padding: 0.95rem;
   font-size: 1rem;
   border-radius: var(--raio);
 }
@@ -772,72 +1002,210 @@
 }
 
 /* ---------- Sucesso ---------- */
-.cartao-sucesso {
-  text-align: center;
-  background-color: var(--cor-fundo-cartao);
-  border: 1px solid var(--cor-borda);
+.banner-sucesso {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background-color: rgba(76, 175, 80, 0.12);
+  border: 1px solid var(--cor-sucesso);
   border-radius: var(--raio);
-  padding: 2.5rem 1.5rem;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
 }
 
-.icone-sucesso {
-  width: 3.5rem;
-  height: 3.5rem;
-  margin: 0 auto 1rem;
+.banner-sucesso-icone {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   background-color: var(--cor-sucesso);
   color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
   font-weight: 700;
 }
 
+.banner-sucesso h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--cor-sucesso);
+}
+
+.cartao-reserva {
+  background-color: var(--cor-fundo-cartao);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cartao-reserva-linha {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.cartao-reserva-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cartao-reserva-servico {
+  margin: 0;
+  font-weight: 700;
+}
+
+.cartao-reserva-detalhe {
+  margin: 0.15rem 0 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+}
+
+.cartao-reserva-preco {
+  color: var(--cor-sucesso);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.cartao-reserva-dados {
+  margin: 0.9rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.cartao-reserva-dados > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.88rem;
+}
+
+.cartao-reserva-dados dt {
+  color: var(--cor-texto-suave);
+  flex-shrink: 0;
+}
+
+.cartao-reserva-dados dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 600;
+}
+
+.cartao-codigo {
+  background-color: var(--cor-fundo-cartao);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
 .rotulo-codigo {
-  margin: 1.5rem 0 0.5rem;
+  margin: 0 0 0.5rem;
   color: var(--cor-texto-suave);
   font-size: 0.85rem;
 }
 
 .codigo-confirmacao {
   font-family: var(--fonte-display);
-  font-size: 2.2rem;
+  font-size: 2rem;
   letter-spacing: 0.25em;
   color: var(--cor-dourado);
   background-color: var(--cor-fundo-elevado);
   border-radius: var(--raio);
-  padding: 0.75rem;
-  margin: 0 0 1.5rem;
+  padding: 0.65rem;
+  margin: 0 0 0.6rem;
+}
+
+.acoes-sucesso {
+  background-color: var(--cor-fundo-cartao);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+
+.linha-acao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem 1rem;
+  color: var(--cor-texto);
+  text-decoration: none;
+  border-bottom: 1px solid var(--cor-borda);
+  font-size: 0.92rem;
+}
+
+.linha-acao:last-child {
+  border-bottom: none;
+}
+
+.linha-acao:hover,
+.linha-acao:focus-visible {
+  background-color: var(--cor-fundo-elevado);
+  color: var(--cor-dourado);
 }
 
 .feedback-flutuante {
   max-width: 640px;
-  margin: 1rem auto 0;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  margin: 0.75rem auto 0;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.feedback-flutuante:empty {
+  margin: 0;
 }
 
 /* ---------- Telas maiores ---------- */
 @media (min-width: 640px) {
   .topo-agendar {
-    padding: 3.5rem 2.5rem 2.75rem;
+    padding: 1.6rem 2.5rem 1.4rem;
   }
   .topo-agendar-titulo {
-    font-size: 3.6rem;
+    font-size: 2.2rem;
+  }
+  .topo-logo {
+    width: 3.4rem;
+    height: 3.4rem;
+  }
+  .topo-agendar-links {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 0;
+  }
+  .abas,
+  .indicador-etapas {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
   .secao-agendar {
     padding-left: 2.5rem;
     padding-right: 2.5rem;
   }
-  .indicador-etapas,
   .feedback-flutuante {
     padding-left: 2.5rem;
     padding-right: 2.5rem;
+  }
+  .grade-horarios {
+    grid-template-columns: repeat(5, 1fr);
   }
   .sheet-confirmacao {
     border-radius: 20px;
     bottom: 2rem;
     padding: 1rem 2rem 2rem;
+  }
+  .sheet-acoes {
+    margin-left: -2rem;
+    margin-right: -2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    bottom: -2rem;
   }
 }

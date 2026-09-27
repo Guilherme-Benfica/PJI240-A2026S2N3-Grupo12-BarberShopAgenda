@@ -32,7 +32,7 @@ public class RegistrarClienteDTO
     [Required, EmailAddress, MaxLength(150)]
     public string Email { get; set; } = string.Empty;
 
-    [Required, MinLength(6)]
+    [Required, MinLength(8)]
     public string Senha { get; set; } = string.Empty;
 }
 
@@ -53,7 +53,7 @@ public class RedefinirSenhaDTO
     [Required]
     public string Token { get; set; } = string.Empty;
 
-    [Required, MinLength(6)]
+    [Required, MinLength(8)]
     public string NovaSenha { get; set; } = string.Empty;
 }
 
@@ -62,6 +62,6 @@ public class AlterarSenhaDTO
     [Required]
     public string SenhaAtual { get; set; } = string.Empty;
 
-    [Required, MinLength(6)]
+    [Required, MinLength(8)]
     public string NovaSenha { get; set; } = string.Empty;
 }

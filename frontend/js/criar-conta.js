@@ -17,8 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (campoSenha.value.length < 6) {
-      mostrarFeedback(feedback, "A senha precisa ter pelo menos 6 caracteres.", "erro");
+    if (campoSenha.value.length < 8) {
+      mostrarFeedback(feedback, "A senha precisa ter pelo menos 8 caracteres.", "erro");
       return;
     }
 

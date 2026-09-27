@@ -28,7 +28,7 @@ public class BarbeiroCreateDTO
     [Required, EmailAddress, MaxLength(150)]
     public string Email { get; set; } = string.Empty;
 
-    [Required, MinLength(6)]
+    [Required, MinLength(8)]
     public string Senha { get; set; } = string.Empty;
 }
 

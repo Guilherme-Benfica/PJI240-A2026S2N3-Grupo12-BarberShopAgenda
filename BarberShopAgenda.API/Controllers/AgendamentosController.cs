@@ -4,6 +4,7 @@ using BarberShopAgenda.Domain.Entities;
 using BarberShopAgenda.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace BarberShopAgenda.API.Controllers;
 
@@ -38,17 +39,35 @@ public class AgendamentosController : ControllerBase
         CodigoConfirmacao = a.CodigoConfirmacao
     };
 
-    /// <summary>Lista todos os agendamentos.</summary>
+    /// <summary>
+    /// Id do barbeiro logado quando o usuário é apenas Barbeiro (não Admin).
+    /// Null para Admin — que enxerga a agenda de todo mundo.
+    /// </summary>
+    private int? BarbeiroLogadoId
+    {
+        get
+        {
+            if (!User.IsInRole("Barbeiro") || User.IsInRole("Admin")) return null;
+            return int.TryParse(User.FindFirst("barbeiroId")?.Value, out var id) ? id : -1;
+        }
+    }
+
+    /// <summary>Lista os agendamentos. Barbeiro vê apenas os da própria agenda; Admin vê todos.</summary>
     [Authorize(Roles = "Admin,Barbeiro")]
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<AgendamentoResponseDTO>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<AgendamentoResponseDTO>>> GetAll()
     {
-        var agendamentos = await _agendamentoService.GetAllAsync();
+        var barbeiroLogadoId = BarbeiroLogadoId;
+
+        var agendamentos = barbeiroLogadoId is null
+            ? await _agendamentoService.GetAllAsync()
+            : await _agendamentoService.GetByBarbeiroAsync(barbeiroLogadoId.Value);
+
         return Ok(agendamentos.Select(ParaResponseDTO));
     }
 
-    /// <summary>Busca um agendamento pelo id.</summary>
+    /// <summary>Busca um agendamento pelo id. Barbeiro só acessa os da própria agenda.</summary>
     [Authorize(Roles = "Admin,Barbeiro")]
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(AgendamentoResponseDTO), StatusCodes.Status200OK)]
@@ -56,8 +75,17 @@ public class AgendamentosController : ControllerBase
     public async Task<ActionResult<AgendamentoResponseDTO>> GetById(int id)
     {
         var agendamento = await _agendamentoService.GetByIdAsync(id);
-        if (agendamento is null) return NotFound(new { mensagem = "Agendamento não encontrado." });
+        if (agendamento is null || !PodeGerenciar(agendamento))
+            return NotFound(new { mensagem = "Agendamento não encontrado." });
+
         return Ok(ParaResponseDTO(agendamento));
+    }
+
+    /// <summary>Um barbeiro só pode ver/alterar agendamentos da própria agenda; o admin pode todos.</summary>
+    private bool PodeGerenciar(Agendamento agendamento)
+    {
+        var barbeiroLogadoId = BarbeiroLogadoId;
+        return barbeiroLogadoId is null || agendamento.BarbeiroId == barbeiroLogadoId.Value;
     }
 
     /// <summary>Lista a agenda de um barbeiro específico. Um usuário com papel Barbeiro só pode consultar a própria agenda.</summary>
@@ -86,6 +114,7 @@ public class AgendamentosController : ControllerBase
     /// Endpoint público — usado pela tela "Meus agendamentos".
     /// </summary>
     [AllowAnonymous]
+    [EnableRateLimiting("publico")]
     [HttpGet("cliente")]
     [ProducesResponseType(typeof(IEnumerable<AgendamentoResponseDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -134,11 +163,12 @@ public class AgendamentosController : ControllerBase
             return BadRequest(new { mensagem = "Data inválida. Utilize o formato yyyy-MM-dd." });
 
         var agendamentos = await _agendamentoService.GetByDataAsync(dataParseada);
-        return Ok(agendamentos.Select(ParaResponseDTO));
+        return Ok(agendamentos.Where(PodeGerenciar).Select(ParaResponseDTO));
     }
 
     /// <summary>Cria um novo agendamento, validando conflito de horário. Endpoint público — usado no fluxo de agendamento do cliente.</summary>
     [AllowAnonymous]
+    [EnableRateLimiting("publico")]
     [HttpPost]
     [ProducesResponseType(typeof(AgendamentoResponseDTO), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -150,39 +180,37 @@ public class AgendamentosController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = criado.Id }, ParaResponseDTO(agendamentoCompleto!));
     }
 
-    /// <summary>Confirma um agendamento.</summary>
+    /// <summary>Confirma um agendamento. Barbeiro só confirma os da própria agenda.</summary>
     [Authorize(Roles = "Admin,Barbeiro")]
     [HttpPut("{id:int}/confirmar")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Confirmar(int id)
-    {
-        var confirmado = await _agendamentoService.ConfirmarAsync(id);
-        if (!confirmado) return NotFound(new { mensagem = "Agendamento não encontrado." });
-        return NoContent();
-    }
+    public Task<IActionResult> Confirmar(int id) => AlterarStatusAsync(id, _agendamentoService.ConfirmarAsync);
 
-    /// <summary>Cancela um agendamento.</summary>
+    /// <summary>Cancela um agendamento. Barbeiro só cancela os da própria agenda.</summary>
     [Authorize(Roles = "Admin,Barbeiro")]
     [HttpPut("{id:int}/cancelar")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Cancelar(int id)
-    {
-        var cancelado = await _agendamentoService.CancelarAsync(id);
-        if (!cancelado) return NotFound(new { mensagem = "Agendamento não encontrado." });
-        return NoContent();
-    }
+    public Task<IActionResult> Cancelar(int id) => AlterarStatusAsync(id, _agendamentoService.CancelarAsync);
 
-    /// <summary>Marca um agendamento como concluído.</summary>
+    /// <summary>Marca um agendamento como concluído. Barbeiro só conclui os da própria agenda.</summary>
     [Authorize(Roles = "Admin,Barbeiro")]
     [HttpPut("{id:int}/concluir")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Concluir(int id)
+    public Task<IActionResult> Concluir(int id) => AlterarStatusAsync(id, _agendamentoService.ConcluirAsync);
+
+    private async Task<IActionResult> AlterarStatusAsync(int id, Func<int, Task<bool>> alterar)
     {
-        var concluido = await _agendamentoService.ConcluirAsync(id);
-        if (!concluido) return NotFound(new { mensagem = "Agendamento não encontrado." });
+        // Confere a dona da agenda antes de mexer: sem isso um barbeiro conseguiria
+        // confirmar/cancelar/concluir agendamento de outro só chutando o id.
+        var agendamento = await _agendamentoService.GetByIdAsync(id);
+        if (agendamento is null || !PodeGerenciar(agendamento))
+            return NotFound(new { mensagem = "Agendamento não encontrado." });
+
+        var alterado = await alterar(id);
+        if (!alterado) return NotFound(new { mensagem = "Agendamento não encontrado." });
         return NoContent();
     }
 }

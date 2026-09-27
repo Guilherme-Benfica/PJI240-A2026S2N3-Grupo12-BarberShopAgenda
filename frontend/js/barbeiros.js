@@ -23,8 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const emEdicao = Boolean(campoId.value);
 
-    if (!emEdicao && (!campoEmail.value.trim() || campoSenha.value.length < 6)) {
-      mostrarFeedback(feedback, "Informe um e-mail e uma senha de pelo menos 6 caracteres pra criar o login do barbeiro.", "erro");
+    if (!emEdicao && (!campoEmail.value.trim() || campoSenha.value.length < 8)) {
+      mostrarFeedback(feedback, "Informe um e-mail e uma senha de pelo menos 8 caracteres pra criar o login do barbeiro.", "erro");
       return;
     }
 

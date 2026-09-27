@@ -1,17 +1,23 @@
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using BarberShopAgenda.API.Middleware;
 using BarberShopAgenda.Domain.Interfaces;
 using BarberShopAgenda.Infrastructure.Data;
 using BarberShopAgenda.Infrastructure.Repositories;
 using BarberShopAgenda.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 const string FrontendCorsPolicy = "FrontendCorsPolicy";
+const string PoliticaLogin = "login";
+const string PoliticaPublica = "publico";
 
 // Connection string: variável de ambiente tem prioridade (uso no Azure App Service)
 var connectionString = Environment.GetEnvironmentVariable("BARBERSHOP_CONNECTION_STRING")
@@ -71,6 +77,41 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Atrás do proxy do Render o IP do cliente vem no X-Forwarded-For; sem isso o rate limit
+// enxergaria um IP só para todo mundo e um visitante derrubaria o acesso dos outros.
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    // Login e recuperação de senha: janela curta e apertada, contra força bruta.
+    options.AddPolicy(PoliticaLogin, contexto => RateLimitPartition.GetFixedWindowLimiter(
+        IdentificarChamador(contexto),
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(5) }));
+
+    // Endpoints públicos de escrita (autocadastro e agendamento): evita flood de registros.
+    options.AddPolicy(PoliticaPublica, contexto => RateLimitPartition.GetFixedWindowLimiter(
+        IdentificarChamador(contexto),
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 20, Window = TimeSpan.FromMinutes(5) }));
+
+    options.OnRejected = async (contexto, cancellationToken) =>
+    {
+        contexto.HttpContext.Response.ContentType = "application/json";
+        await contexto.HttpContext.Response.WriteAsync(
+            JsonSerializer.Serialize(new { mensagem = "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente de novo." }),
+            cancellationToken);
+    };
+});
+
+static string IdentificarChamador(HttpContext contexto) =>
+    contexto.Connection.RemoteIpAddress?.ToString() ?? "desconhecido";
+
 var frontendOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
     ?? new[] { "http://localhost:5500", "http://127.0.0.1:5500" };
 
@@ -95,10 +136,13 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseForwardedHeaders();
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseCors(FrontendCorsPolicy);
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

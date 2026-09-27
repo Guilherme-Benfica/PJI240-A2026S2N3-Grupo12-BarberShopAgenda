@@ -2,12 +2,15 @@ using BarberShopAgenda.API.DTOs;
 using BarberShopAgenda.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace BarberShopAgenda.API.Controllers;
 
 [ApiController]
 [Route("api/auth")]
 [Produces("application/json")]
+// Tudo que envolve credencial passa pelo limite mais apertado (força bruta / enumeração).
+[EnableRateLimiting("login")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;

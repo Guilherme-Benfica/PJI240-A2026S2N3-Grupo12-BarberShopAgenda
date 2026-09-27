@@ -3,6 +3,7 @@ using BarberShopAgenda.Domain.Entities;
 using BarberShopAgenda.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace BarberShopAgenda.API.Controllers;
 
@@ -50,10 +51,17 @@ public class ClientesController : ControllerBase
     }
 
     /// <summary>
-    /// Cria um novo cliente, ou reaproveita um já existente com o mesmo telefone (atualizando nome/e-mail).
+    /// Cria um novo cliente, ou reaproveita um já existente com o mesmo telefone.
     /// Endpoint público — usado no autocadastro do fluxo de agendamento, evitando duplicar o mesmo cliente a cada visita.
     /// </summary>
+    /// <remarks>
+    /// Por ser público, não sobrescreve nem devolve os dados de quem já está cadastrado: só o id.
+    /// Caso contrário bastaria chutar um telefone para (a) ler o nome/e-mail do dono dele e
+    /// (b) trocar o e-mail do cadastro alheio, desviando confirmações e o link de criação de senha.
+    /// Alteração de dados de cliente existente é operação do admin (PUT abaixo).
+    /// </remarks>
     [AllowAnonymous]
+    [EnableRateLimiting("publico")]
     [HttpPost]
     [ProducesResponseType(typeof(ClienteResponseDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ClienteResponseDTO), StatusCodes.Status201Created)]
@@ -63,10 +71,14 @@ public class ClientesController : ControllerBase
         var existente = await _clienteRepository.GetByTelefoneAsync(dto.Telefone);
         if (existente is not null)
         {
-            existente.Nome = dto.Nome;
-            existente.Email = dto.Email;
-            await _clienteRepository.UpdateAsync(existente);
-            return Ok(ParaResponseDTO(existente));
+            // Completa só o que estiver em branco (cadastro antigo sem e-mail), sem trocar o que já existe.
+            if (string.IsNullOrWhiteSpace(existente.Email) && !string.IsNullOrWhiteSpace(dto.Email))
+            {
+                existente.Email = dto.Email;
+                await _clienteRepository.UpdateAsync(existente);
+            }
+
+            return Ok(new ClienteResponseDTO { Id = existente.Id });
         }
 
         var cliente = new Cliente

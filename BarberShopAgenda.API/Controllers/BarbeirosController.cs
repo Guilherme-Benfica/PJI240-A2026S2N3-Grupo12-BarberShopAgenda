@@ -22,7 +22,11 @@ public class BarbeirosController : ControllerBase
         _usuarioRepository = usuarioRepository;
     }
 
-    private static BarbeiroResponseDTO ParaResponseDTO(Barbeiro b) => new()
+    /// <param name="incluirDadosDeConta">
+    /// Só o admin recebe e-mail de login e situação da conta. No catálogo público isso seria
+    /// entregar de bandeja os usuários válidos para tentativas de login.
+    /// </param>
+    private static BarbeiroResponseDTO ParaResponseDTO(Barbeiro b, bool incluirDadosDeConta = false) => new()
     {
         Id = b.Id,
         Nome = b.Nome,
@@ -36,8 +40,8 @@ public class BarbeirosController : ControllerBase
         SabadoHorarioFim = b.SabadoHorarioFim,
         FeriasInicio = b.FeriasInicio,
         FeriasFim = b.FeriasFim,
-        Email = b.Usuario?.Email,
-        ContaAtiva = b.Usuario?.Ativo
+        Email = incluirDadosDeConta ? b.Usuario?.Email : null,
+        ContaAtiva = incluirDadosDeConta ? b.Usuario?.Ativo : null
     };
 
     /// <summary>Lista os barbeiros visíveis publicamente (agenda + catálogo do cliente) — some quem tiver a conta inativa.</summary>
@@ -46,7 +50,7 @@ public class BarbeirosController : ControllerBase
     public async Task<ActionResult<IEnumerable<BarbeiroResponseDTO>>> GetAll()
     {
         var barbeiros = await _barbeiroRepository.GetAllVisiveisAsync();
-        return Ok(barbeiros.Select(ParaResponseDTO));
+        return Ok(barbeiros.Select(b => ParaResponseDTO(b)));
     }
 
     /// <summary>Lista todos os barbeiros, inclusive com a conta inativa — uso administrativo.</summary>
@@ -56,7 +60,7 @@ public class BarbeirosController : ControllerBase
     public async Task<ActionResult<IEnumerable<BarbeiroResponseDTO>>> GetTodos()
     {
         var barbeiros = await _barbeiroRepository.GetAllAsync();
-        return Ok(barbeiros.Select(ParaResponseDTO));
+        return Ok(barbeiros.Select(b => ParaResponseDTO(b, incluirDadosDeConta: true)));
     }
 
     /// <summary>Busca um barbeiro pelo id.</summary>
@@ -111,7 +115,7 @@ public class BarbeirosController : ControllerBase
 
         var criado = await _barbeiroRepository.AddAsync(barbeiro);
         criado.Usuario = usuarioCriado;
-        return CreatedAtAction(nameof(GetById), new { id = criado.Id }, ParaResponseDTO(criado));
+        return CreatedAtAction(nameof(GetById), new { id = criado.Id }, ParaResponseDTO(criado, incluirDadosDeConta: true));
     }
 
     /// <summary>Atualiza os dados de agenda de um barbeiro (nome, especialidade, situação da agenda, período de férias). Não mexe em horários/dias de trabalho nem na conta de login.</summary>

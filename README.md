@@ -31,6 +31,14 @@ O sistema tem como objetivo **facilitar o agendamento de serviços**, tornando a
 
 ## 📸 Screenshots
 
+**No celular** — a maior parte dos agendamentos vem do telefone, então o fluxo do cliente foi desenhado primeiro para essa tela:
+
+| Serviços | Detalhes da barbearia | Escolha de horário |
+|---|---|---|
+| ![Lista de serviços no celular](docs/screenshots/mobile-servicos.png) | ![Endereço e horário de funcionamento](docs/screenshots/mobile-detalhes.png) | ![Escolha de data, profissional e horário](docs/screenshots/mobile-horarios.png) |
+
+**No computador**
+
 | Agendamento (Cliente) | Login |
 |---|---|
 | ![Fluxo de agendamento](docs/screenshots/agendar.png) | ![Tela de login](docs/screenshots/login.png) |
@@ -45,8 +53,10 @@ O sistema tem como objetivo **facilitar o agendamento de serviços**, tornando a
 
 **Cliente (público, sem cadastro obrigatório)**
 - Agendamento online em poucos passos: escolhe serviço, profissional, data e horário — sem precisar criar conta.
-- Grade de horários calculada automaticamente a partir da agenda de cada barbeiro (manhã/tarde), já excluindo horários ocupados, passados e períodos de férias/ausência.
+- Interface pensada para o celular: cabeçalho com identidade da barbearia e status **"aberto agora / fechado"** calculado na hora, abas **Serviços / Profissionais / Detalhes**, e confirmação em *bottom sheet* com o botão sempre à vista.
+- Grade de horários calculada automaticamente a partir da agenda de cada barbeiro (manhã/tarde), já excluindo horários ocupados, passados, períodos de férias/ausência e o expediente reduzido de sábado.
 - Confirmação por e-mail com código de 6 dígitos, usado para consultar os próprios agendamentos depois (sem senha).
+- Ao final do agendamento: resumo da reserva, atalho para **adicionar na agenda do celular** (Google Agenda) e para **traçar rota** até a barbearia.
 - Conta opcional (`criar-conta.html`) com verificação de e-mail e recuperação de senha, pra quem preferir ter um histórico permanente sem depender do código.
 
 **Barbeiro**
@@ -108,7 +118,7 @@ cd PJI240-A2026S2N3-Grupo12-BarberShopAgenda
 docker-compose up -d mysql
 ```
 
-Isso cria o container MySQL 8.0, o banco `barbershop_agenda` e aplica `database/schema.sql` automaticamente (tabelas + seeds: 3 barbeiros, 5 serviços e as contas iniciais de admin/barbeiro).
+Isso cria o container MySQL 8.0, o banco `barbershop_agenda` e aplica `database/schema.sql` automaticamente (tabelas + seeds: 3 barbeiros, 13 serviços e as contas iniciais de admin/barbeiro).
 
 **3. Rode a API**
 ```bash
@@ -162,7 +172,7 @@ MYSQL_DATABASE=barbershop_agenda
 mysql -u root -p < database/schema.sql
 ```
 
-Isso cria as tabelas e os dados iniciais (3 barbeiros, 5 serviços, contas de admin e barbeiro — veja a seção [Autenticação](#-autenticação)). Alternativamente, o schema também pode ser criado via **migrations do EF Core** (passo 3).
+Isso cria as tabelas e os dados iniciais (3 barbeiros, 13 serviços, contas de admin e barbeiro — veja a seção [Autenticação](#-autenticação)). Alternativamente, o schema também pode ser criado via **migrations do EF Core** (passo 3).
 
 ## 2. Configurar a connection string
 
@@ -229,7 +239,7 @@ Se a URL/porta da API não for `https://localhost:7001/api`, ajuste antes de car
 dotnet test
 ```
 
-Cobrem: criação de agendamento válido, conflito de horário por barbeiro e por cliente, cancelamento, listagem por data, cálculo de horários disponíveis (incluindo período de férias), autenticação (login válido/inválido/e-mail não confirmado), troca de senha, e o ciclo completo de conta de cliente (registro, vínculo ao histórico de convidado, confirmação de e-mail, redefinição de senha).
+São 24 testes cobrindo: criação de agendamento válido, conflito de horário por barbeiro e por cliente, cancelamento, listagem por data, cálculo de horários disponíveis (incluindo período de férias e o expediente reduzido de sábado), autenticação (login válido/inválido/e-mail não confirmado), troca de senha, e o ciclo completo de conta de cliente (registro, vínculo ao histórico de convidado, confirmação de e-mail, redefinição de senha).
 
 ---
 
@@ -244,6 +254,7 @@ Cobrem: criação de agendamento válido, conflito de horário por barbeiro e po
 | `Chave JWT não configurada` / `Connection string não configurada` ao rodar a API | Faltou configurar `Jwt:Key` / `ConnectionStrings:DefaultConnection` (ou as variáveis de ambiente equivalentes) | Veja as seções [2](#2-configurar-a-connection-string) e [Autenticação](#-autenticação) |
 | Tela de admin/barbeiro fica "piscando" entre páginas | Sessão de um papel tentando acessar página de outro papel (bug corrigido) | Dê um hard refresh (`Ctrl+Shift+R`) pra garantir que está com os arquivos JS mais recentes |
 | Mudança no frontend não aparece no navegador | Cache do navegador | Hard refresh (`Ctrl+Shift+R`) ou aba anônima |
+| `Muitas tentativas em pouco tempo` (HTTP 429) | Rate limit por IP (10 logins/5 min; 20 escritas públicas/5 min) | Aguarde alguns minutos — é a proteção contra força bruta funcionando |
 
 ---
 
@@ -260,11 +271,12 @@ BarberShopAgenda/
 │   └── appsettings.Development.json Configuração local de desenvolvimento
 ├── BarberShopAgenda.Domain/         Entidades e interfaces (contratos)
 │   ├── Entities/                    Cliente, Barbeiro, Servico, Agendamento, Usuario, PapelUsuario...
-│   └── Interfaces/                  Contratos de repositórios e serviços
+│   ├── Interfaces/                  Contratos de repositórios e serviços
+│   └── HorarioBrasil.cs             "Agora"/"hoje" no fuso do Brasil (o servidor roda em UTC)
 ├── BarberShopAgenda.Infrastructure/ Implementação: EF Core, repositórios, serviços de negócio
-│   ├── Data/                        BarberShopContext (DbContext)
+│   ├── Data/                        BarberShopContext (DbContext) + interceptor de charset utf8mb4
 │   ├── Repositories/                Implementação dos repositórios
-│   ├── Services/                    Auth, ClienteConta, Agendamento, HorarioDisponivel, Email (SMTP)...
+│   ├── Services/                    Auth, ClienteConta, Agendamento, HorarioDisponivel, Email (Brevo)...
 │   └── Migrations/                  Migrations do EF Core
 ├── BarberShopAgenda.Tests/          Testes xUnit
 │   └── Services/                    Testes dos serviços de domínio
@@ -274,7 +286,7 @@ BarberShopAgenda/
 │   ├── clientes.html                CRUD de clientes (Admin)
 │   ├── barbeiros.html               CRUD de barbeiros + conta + férias (Admin)
 │   ├── servicos.html                CRUD de serviços (Admin)
-│   ├── agendar.html                 Fluxo público de agendamento (Cliente)
+│   ├── agendar.html                 Fluxo público de agendamento (Cliente) — abas Serviços/Profissionais/Detalhes
 │   ├── meus-agendamentos.html       Consulta por telefone + código (Cliente, sem conta)
 │   ├── login.html                   Login (Admin, Barbeiro ou Cliente)
 │   ├── criar-conta.html             Criação de conta de cliente
@@ -286,6 +298,7 @@ BarberShopAgenda/
 │   ├── css/                         style.css (tema/base) + agendar.css (fluxo do cliente)
 │   └── js/                          config.js (URL da API) + api.js (fetch) + auth.js (sessão/JWT) + 1 script por página
 ├── database/schema.sql              Script SQL de criação e seeds (alternativa às migrations)
+├── docs/screenshots/                Imagens usadas neste README
 ├── Dockerfile                       Build multi-stage da API
 ├── docker-compose.yml               Orquestração API + MySQL
 ├── .github/workflows/deploy-pages.yml  Publica frontend/ no GitHub Pages a cada push
@@ -321,6 +334,27 @@ Em produção, defina a chave de assinatura do JWT via variável de ambiente `BA
 
 ---
 
+## 🛡️ Segurança
+
+Medidas aplicadas no projeto, com o item correspondente do OWASP entre parênteses:
+
+| Risco | Como é tratado |
+|---|---|
+| Senhas (*Cryptographic Failures*) | Hash com salt via `PasswordHasher` (PBKDF2) — nunca em texto puro. Mínimo de 8 caracteres |
+| Injeção de SQL (*Injection*) | Todo acesso a dados passa pelo EF Core com parâmetros; não há SQL concatenado |
+| Quebra de controle de acesso / IDOR | Cada barbeiro só lê e altera agendamentos da própria agenda; cliente autenticado só acessa o próprio histórico (id vem do token, nunca da URL) |
+| Consulta sem login ("Meus agendamentos") | Exige telefone **+** código de confirmação, com a mesma mensagem genérica nos dois tipos de falha (não revela se o telefone existe) |
+| Exposição de dados sensíveis | O catálogo público de barbeiros não devolve e-mail de login nem situação da conta; o autocadastro de cliente devolve só o id e não altera cadastro existente |
+| Força bruta e flood | Rate limit por IP: 10 tentativas/5 min em login e recuperação de senha; 20/5 min nos endpoints públicos de escrita (`X-Forwarded-For` respeitado por causa do proxy) |
+| Mensagens de erro vazando detalhe | Erro não tratado responde mensagem genérica; o *stack trace* fica só no log do servidor |
+| CORS | Lista explícita de origens permitidas (`Cors:AllowedOrigins`), sem curinga |
+| Segredos no repositório | Connection string, chave JWT e chave da Brevo só em variável de ambiente; `.env` no `.gitignore` |
+| Dependências vulneráveis | Verificado com `dotnet list package --vulnerable` |
+
+Não se aplicam ao escopo atual: CSRF (o token vai no header `Authorization`, não em cookie), upload de arquivos (não existe) e SSRF (a única chamada externa é uma URL fixa da Brevo).
+
+---
+
 ## 📧 E-mail transacional (opcional)
 
 A API envia e-mails automaticamente (confirmação de agendamento com código, verificação de conta, redefinição de senha) pela **API HTTP transacional da Brevo** — sem custo (300 e-mails/dia grátis). Se a chave não estiver configurada, tudo continua funcionando normalmente, só não envia o e-mail (fica um aviso no log).
@@ -350,7 +384,7 @@ Configurado em `appsettings.json`/`appsettings.Development.json`:
 
 | Recurso | Método | Rota | Acesso |
 |---|---|---|---|
-| Auth | POST | `/api/auth/login` | Público |
+| Auth | POST | `/api/auth/login` | Público (limitado a 10 tentativas/5 min por IP) |
 | Auth | POST | `/api/auth/registrar` | Público (cria conta de cliente) |
 | Auth | POST | `/api/auth/confirmar-email` | Público |
 | Auth | POST | `/api/auth/esqueci-senha` | Público |
@@ -358,30 +392,30 @@ Configurado em `appsettings.json`/`appsettings.Development.json`:
 | Auth | PUT | `/api/auth/senha` | Qualquer autenticado (troca a própria senha) |
 | Clientes | GET | `/api/clientes` | Admin |
 | Clientes | GET | `/api/clientes/{id}` | Admin |
-| Clientes | POST | `/api/clientes` | Público (autocadastro no agendamento) |
+| Clientes | POST | `/api/clientes` | Público (autocadastro no agendamento; devolve só o id; 20/5 min por IP) |
 | Clientes | PUT | `/api/clientes/{id}` | Admin |
 | Clientes | DELETE | `/api/clientes/{id}` | Admin |
-| Barbeiros | GET | `/api/barbeiros` | Público (catálogo — só quem tem conta ativa ou não tem conta) |
-| Barbeiros | GET | `/api/barbeiros/todos` | Admin (todos, inclusive conta inativa) |
+| Barbeiros | GET | `/api/barbeiros` | Público (catálogo — sem e-mail de login; só quem tem conta ativa ou não tem conta) |
+| Barbeiros | GET | `/api/barbeiros/todos` | Admin (todos, inclusive conta inativa, com e-mail de login) |
 | Barbeiros | GET | `/api/barbeiros/{id}` | Público |
 | Barbeiros | POST | `/api/barbeiros` | Admin (já cria a conta de login) |
-| Barbeiros | PUT | `/api/barbeiros/{id}` | Admin (agenda, especialidade, férias) |
+| Barbeiros | PUT | `/api/barbeiros/{id}` | Admin (agenda, especialidade, férias, fim de expediente no sábado) |
 | Barbeiros | PUT | `/api/barbeiros/{id}/conta/ativar` | Admin |
 | Barbeiros | PUT | `/api/barbeiros/{id}/conta/inativar` | Admin |
 | Serviços | GET | `/api/servicos` | Público (catálogo) |
 | Serviços | POST | `/api/servicos` | Admin |
 | Serviços | PUT | `/api/servicos/{id}` | Admin |
 | Horários | GET | `/api/horarios/disponiveis?barbeiroId=&data=&servicoId=` | Público |
-| Agendamentos | GET | `/api/agendamentos` | Admin, Barbeiro |
-| Agendamentos | GET | `/api/agendamentos/{id}` | Admin, Barbeiro |
+| Agendamentos | GET | `/api/agendamentos` | Admin (todos), Barbeiro (só a própria agenda) |
+| Agendamentos | GET | `/api/agendamentos/{id}` | Admin, Barbeiro (só a própria agenda) |
 | Agendamentos | GET | `/api/agendamentos/barbeiro/{barbeiroId}` | Admin, Barbeiro (só a própria agenda) |
 | Agendamentos | GET | `/api/agendamentos/cliente?telefone=&codigo=` | Público (telefone + código de confirmação) |
 | Agendamentos | GET | `/api/agendamentos/me` | Cliente autenticado |
-| Agendamentos | GET | `/api/agendamentos/data/{data}` (formato `yyyy-MM-dd`) | Admin, Barbeiro |
-| Agendamentos | POST | `/api/agendamentos` | Público (fluxo de agendamento do cliente) |
-| Agendamentos | PUT | `/api/agendamentos/{id}/confirmar` | Admin, Barbeiro |
-| Agendamentos | PUT | `/api/agendamentos/{id}/cancelar` | Admin, Barbeiro |
-| Agendamentos | PUT | `/api/agendamentos/{id}/concluir` | Admin, Barbeiro |
+| Agendamentos | GET | `/api/agendamentos/data/{data}` (formato `yyyy-MM-dd`) | Admin (todos), Barbeiro (só a própria agenda) |
+| Agendamentos | POST | `/api/agendamentos` | Público (fluxo de agendamento do cliente; 20/5 min por IP) |
+| Agendamentos | PUT | `/api/agendamentos/{id}/confirmar` | Admin, Barbeiro (só a própria agenda) |
+| Agendamentos | PUT | `/api/agendamentos/{id}/cancelar` | Admin, Barbeiro (só a própria agenda) |
+| Agendamentos | PUT | `/api/agendamentos/{id}/concluir` | Admin, Barbeiro (só a própria agenda) |
 | Dashboard | GET | `/api/dashboard/hoje` | Admin |
 
 ---

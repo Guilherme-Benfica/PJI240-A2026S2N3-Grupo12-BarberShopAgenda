@@ -157,9 +157,11 @@ app.UseAuthorization();
 app.UseOutputCache();
 app.MapControllers();
 
-// Endpoint leve pra manter a instância acordada (sem tocar no banco) — usado pelo
-// workflow .github/workflows/keep-alive.yml, que evita o "sono" do plano free do Render
-// e a demora de ~50s na primeira requisição depois dele (ex.: o próximo login).
+// Endpoint leve de verificação (sem tocar no banco), usado por dois workflows:
+// - keep-alive.yml faz ping aqui a cada ~10 min pra evitar o "sono" do plano free do
+//   Render e a demora de ~50s na primeira requisição depois dele (ex.: o próximo login).
+// - render-deploy.yml chama o Deploy Hook do serviço a cada push no backend, já que a
+//   integração nativa GitHub -> Render parou de notificar push novos automaticamente.
 app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 
 app.Run();

@@ -67,7 +67,7 @@ O sistema tem como objetivo **facilitar o agendamento de serviços**, tornando a
 **Administrador**
 - Dashboard com resumo do dia (total de agendamentos, status e receita prevista).
 - CRUD completo de clientes, barbeiros e serviços.
-- Cadastro de barbeiro já cria a conta de login (e-mail + senha inicial).
+- Cadastro de barbeiro já cria a conta de login (e-mail + senha inicial) e os horários de trabalho (manhã/tarde, dias da semana) — editáveis a qualquer momento depois.
 - Controle independente de **agenda** (aparece pra cliente agendar) e **conta** (consegue logar) por barbeiro — inativar a conta remove o barbeiro completamente da visão de clientes e de outros usuários, sem apagar o histórico.
 - Período de férias/ausência por barbeiro: sem horário disponível só durante o intervalo definido, com retomada automática depois.
 - Visão de todos os agendamentos, com filtro por barbeiro e por data.
@@ -239,7 +239,7 @@ Se a URL/porta da API não for `https://localhost:7001/api`, ajuste antes de car
 dotnet test
 ```
 
-São 24 testes cobrindo: criação de agendamento válido, conflito de horário por barbeiro e por cliente, cancelamento, listagem por data, cálculo de horários disponíveis (incluindo período de férias e o expediente reduzido de sábado), autenticação (login válido/inválido/e-mail não confirmado), troca de senha, e o ciclo completo de conta de cliente (registro, vínculo ao histórico de convidado, confirmação de e-mail, redefinição de senha).
+São 26 testes cobrindo: criação de agendamento válido, conflito de horário por barbeiro e por cliente, cancelamento, listagem por data, cálculo de horários disponíveis (incluindo período de férias e o expediente reduzido de sábado), atualização de horários/dias de trabalho do barbeiro, autenticação (login válido/inválido/e-mail não confirmado), troca de senha, e o ciclo completo de conta de cliente (registro, vínculo ao histórico de convidado, confirmação de e-mail, redefinição de senha).
 
 ---
 

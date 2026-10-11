@@ -4,6 +4,7 @@ using BarberShopAgenda.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace BarberShopAgenda.API.Controllers;
 
@@ -44,8 +45,12 @@ public class BarbeirosController : ControllerBase
         ContaAtiva = incluirDadosDeConta ? b.Usuario?.Ativo : null
     };
 
-    /// <summary>Lista os barbeiros visíveis publicamente (agenda + catálogo do cliente) — some quem tiver a conta inativa.</summary>
+    /// <summary>
+    /// Lista os barbeiros visíveis publicamente (agenda + catálogo do cliente) — some quem tiver a conta inativa.
+    /// Resposta cacheada por 1 minuto: não cacheamos os horários disponíveis (esses continuam sempre em tempo real).
+    /// </summary>
     [HttpGet]
+    [OutputCache(PolicyName = "catalogo")]
     [ProducesResponseType(typeof(IEnumerable<BarbeiroResponseDTO>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BarbeiroResponseDTO>>> GetAll()
     {

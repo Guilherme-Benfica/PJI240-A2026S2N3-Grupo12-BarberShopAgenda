@@ -112,6 +112,15 @@ builder.Services.AddRateLimiter(options =>
 static string IdentificarChamador(HttpContext contexto) =>
     contexto.Connection.RemoteIpAddress?.ToString() ?? "desconhecido";
 
+// Catálogo público (serviços, barbeiros) muda pouco — cacheia a resposta por 1 minuto
+// pra não ir ao banco em toda visita repetida. Nada aqui varia por usuário (são
+// endpoints anônimos), então o mesmo cache serve todo mundo.
+const string PoliticaCatalogo = "catalogo";
+builder.Services.AddOutputCache(options =>
+{
+    options.AddPolicy(PoliticaCatalogo, policy => policy.Expire(TimeSpan.FromMinutes(1)));
+});
+
 var frontendOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
     ?? new[] { "http://localhost:5500", "http://127.0.0.1:5500" };
 
@@ -145,7 +154,13 @@ app.UseCors(FrontendCorsPolicy);
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseOutputCache();
 app.MapControllers();
+
+// Endpoint leve pra manter a instância acordada (sem tocar no banco) — usado pelo
+// workflow .github/workflows/keep-alive.yml, que evita o "sono" do plano free do Render
+// e a demora de ~50s na primeira requisição depois dele (ex.: o próximo login).
+app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 
 app.Run();
 

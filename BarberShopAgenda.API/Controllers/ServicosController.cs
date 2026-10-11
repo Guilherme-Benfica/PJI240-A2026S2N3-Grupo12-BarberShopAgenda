@@ -3,6 +3,7 @@ using BarberShopAgenda.Domain.Entities;
 using BarberShopAgenda.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace BarberShopAgenda.API.Controllers;
 
@@ -27,8 +28,9 @@ public class ServicosController : ControllerBase
         DuracaoMinutos = s.DuracaoMinutos
     };
 
-    /// <summary>Lista todos os serviços.</summary>
+    /// <summary>Lista todos os serviços. Resposta cacheada por 1 minuto — a lista muda pouco.</summary>
     [HttpGet]
+    [OutputCache(PolicyName = "catalogo")]
     [ProducesResponseType(typeof(IEnumerable<ServicoResponseDTO>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<ServicoResponseDTO>>> GetAll()
     {

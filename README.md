@@ -301,7 +301,9 @@ BarberShopAgenda/
 ├── docs/screenshots/                Imagens usadas neste README
 ├── Dockerfile                       Build multi-stage da API
 ├── docker-compose.yml               Orquestração API + MySQL
-├── .github/workflows/deploy-pages.yml  Publica frontend/ no GitHub Pages a cada push
+├── .github/workflows/
+│   ├── deploy-pages.yml             Publica frontend/ no GitHub Pages a cada push
+│   └── keep-alive.yml               Ping em /health a cada ~10 min pra evitar o "sono" do Render
 ├── .dockerignore
 ├── .gitignore
 └── README.md                        Este arquivo
@@ -434,7 +436,13 @@ Variáveis de ambiente configuradas no Render (nunca commitadas):
 | `BARBERSHOP_JWT_KEY` | Chave de assinatura dos tokens JWT em produção |
 | `BARBERSHOP_BREVO_API_KEY` | Chave da API HTTP transacional da Brevo |
 
-> A instância gratuita do Render "dorme" após 15 minutos de inatividade — a primeira requisição depois disso pode levar até ~50s pra responder.
+> A instância gratuita do Render "dorme" após 15 minutos de inatividade, e a primeira requisição depois disso pode levar até ~50s pra responder. Pra evitar isso, `.github/workflows/keep-alive.yml` faz um ping em `/health` a cada ~10 minutos, mantendo a API sempre acordada — isso usa boa parte das 750h/mês gratuitas do Render (um único serviço 24/7 cabe nesse limite, mas não sobra margem pra outro serviço free na mesma conta).
+
+### Cache
+
+- **Catálogo público** (`GET /api/servicos`, `GET /api/barbeiros`): respostas cacheadas no servidor por 1 minuto via *Output Caching* do ASP.NET Core — esses dados mudam pouco, então visitas repetidas não batem no banco a cada vez.
+- **Horários disponíveis não são cacheados** — precisam refletir agendamentos em tempo real.
+- Login não é cacheável (cada tentativa tem credencial própria); quem se beneficia disso é o keep-alive acima, que evita o login cair justo numa hora em que o servidor estava dormindo.
 
 ---
 

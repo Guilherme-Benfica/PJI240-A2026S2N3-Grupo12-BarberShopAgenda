@@ -1,0 +1,16 @@
+name: Keep API awake
+
+# Faz um ping leve na API a cada ~10 minutos pra evitar que o plano free do
+# Render coloque a instância pra dormir (ela dorme sozinha após 15 min sem
+# requisição, e a próxima pessoa espera ~50s até ela acordar de novo).
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping /health
+        run: curl -fsS --max-time 60 https://pji240-a2026s2n3-grupo12-barbershopagenda.onrender.com/health

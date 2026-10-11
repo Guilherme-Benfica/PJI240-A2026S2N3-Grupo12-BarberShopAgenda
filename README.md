@@ -457,4 +457,3 @@ Variáveis de ambiente configuradas no Render (nunca commitadas):
 ---
 
 *Projeto desenvolvido para fins acadêmicos — UNIVESP 2026*
-

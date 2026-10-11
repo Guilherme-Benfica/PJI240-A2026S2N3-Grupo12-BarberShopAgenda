@@ -9,7 +9,7 @@ public class Barbeiro
     [Required, MaxLength(150)]
     public string Nome { get; set; } = string.Empty;
 
-    [MaxLength(150)]
+    [MaxLength(300)]
     public string? Especialidade { get; set; }
 
     public bool Ativo { get; set; } = true;

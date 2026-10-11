@@ -82,8 +82,8 @@ namespace BarberShopAgenda.Infrastructure.Migrations
                         .HasColumnType("tinyint unsigned");
 
                     b.Property<string>("Especialidade")
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
 
                     b.Property<DateOnly?>("FeriasFim")
                         .HasColumnType("date");

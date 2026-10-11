@@ -1,0 +1,23 @@
+name: Deploy API to Render
+
+# Dispara um deploy no Render a cada push no backend, chamando o Deploy Hook
+# do serviço diretamente pela API do Render. Criado porque a integração nativa
+# GitHub <-> Render (auto-deploy via webhook do GitHub App) parou de funcionar
+# depois que o repositório foi recriado, e não confiamos só nela.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "BarberShopAgenda.API/**"
+      - "BarberShopAgenda.Domain/**"
+      - "BarberShopAgenda.Infrastructure/**"
+      - "Dockerfile"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Disparar deploy no Render
+        run: |
+          curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"

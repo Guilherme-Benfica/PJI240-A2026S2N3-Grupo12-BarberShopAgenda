@@ -38,11 +38,16 @@ public class BarbeiroRepository : IBarbeiroRepository
         var existente = await _context.Barbeiros.FindAsync(barbeiro.Id);
         if (existente is null) return false;
 
-        // Horários e dias de trabalho não são gerenciados por esta atualização (a tela de edição não expõe
-        // esses campos) — mantê-los aqui os deixaria vulneráveis a serem zerados sempre que o DTO não os enviasse.
+        // A tela de edição (barbeiros.html) sempre pré-preenche e reenvia os horários/dias atuais,
+        // então é seguro sobrescrever tudo aqui — não corre o risco de zerar por omissão do DTO.
         existente.Nome = barbeiro.Nome;
         existente.Especialidade = barbeiro.Especialidade;
         existente.Ativo = barbeiro.Ativo;
+        existente.HorarioInicioManha = barbeiro.HorarioInicioManha;
+        existente.HorarioFimManha = barbeiro.HorarioFimManha;
+        existente.HorarioInicioTarde = barbeiro.HorarioInicioTarde;
+        existente.HorarioFimTarde = barbeiro.HorarioFimTarde;
+        existente.DiasTrabalho = barbeiro.DiasTrabalho;
         existente.SabadoHorarioFim = barbeiro.SabadoHorarioFim;
         existente.FeriasInicio = barbeiro.FeriasInicio;
         existente.FeriasFim = barbeiro.FeriasFim;

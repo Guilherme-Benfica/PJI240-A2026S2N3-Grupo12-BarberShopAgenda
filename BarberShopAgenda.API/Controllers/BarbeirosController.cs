@@ -123,7 +123,7 @@ public class BarbeirosController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = criado.Id }, ParaResponseDTO(criado, incluirDadosDeConta: true));
     }
 
-    /// <summary>Atualiza os dados de agenda de um barbeiro (nome, especialidade, situação da agenda, período de férias). Não mexe em horários/dias de trabalho nem na conta de login.</summary>
+    /// <summary>Atualiza os dados de agenda de um barbeiro (nome, especialidade, situação, horários, dias de trabalho e férias). Não mexe na conta de login.</summary>
     [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -136,6 +136,11 @@ public class BarbeirosController : ControllerBase
             Nome = dto.Nome,
             Especialidade = dto.Especialidade,
             Ativo = dto.Ativo,
+            HorarioInicioManha = dto.HorarioInicioManha,
+            HorarioFimManha = dto.HorarioFimManha,
+            HorarioInicioTarde = dto.HorarioInicioTarde,
+            HorarioFimTarde = dto.HorarioFimTarde,
+            DiasTrabalho = dto.DiasTrabalho,
             SabadoHorarioFim = dto.SabadoHorarioFim,
             FeriasInicio = dto.FeriasInicio,
             FeriasFim = dto.FeriasFim

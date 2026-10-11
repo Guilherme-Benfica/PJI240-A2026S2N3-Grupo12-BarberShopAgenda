@@ -33,9 +33,9 @@ public class BarbeiroCreateDTO
 }
 
 /// <summary>
-/// Atualiza os dados de agenda editáveis pelo admin. Não inclui horários/dias de trabalho —
-/// esses só são definidos na criação, e não há tela hoje para editá-los depois (evita zerá-los sem querer).
-/// SabadoHorarioFim é exceção: é editável a qualquer momento, pois o formulário sempre envia o valor atual.
+/// Atualiza os dados de agenda editáveis pelo admin, incluindo horários/dias de trabalho.
+/// O formulário (barbeiros.html) sempre envia os valores atuais do barbeiro, mesmo quando
+/// o admin não mexeu neles — por isso é seguro incluir esses campos aqui sem risco de zerá-los.
 /// </summary>
 public class BarbeiroUpdateDTO
 {
@@ -46,6 +46,12 @@ public class BarbeiroUpdateDTO
     public string? Especialidade { get; set; }
 
     public bool Ativo { get; set; } = true;
+
+    public TimeOnly? HorarioInicioManha { get; set; }
+    public TimeOnly? HorarioFimManha { get; set; }
+    public TimeOnly? HorarioInicioTarde { get; set; }
+    public TimeOnly? HorarioFimTarde { get; set; }
+    public byte DiasTrabalho { get; set; } = 63;
 
     /// <summary>Fim do expediente aos sábados, quando diferente do resto da semana. Nulo = mesmo horário dos outros dias.</summary>
     public TimeOnly? SabadoHorarioFim { get; set; }

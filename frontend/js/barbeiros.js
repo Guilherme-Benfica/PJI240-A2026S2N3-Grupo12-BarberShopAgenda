@@ -6,6 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const campoNome = document.getElementById("barbeiro-nome");
   const campoEspecialidade = document.getElementById("barbeiro-especialidade");
   const campoAtivo = document.getElementById("barbeiro-ativo");
+  const campoManhaInicio = document.getElementById("barbeiro-manha-inicio");
+  const campoManhaFim = document.getElementById("barbeiro-manha-fim");
+  const campoTardeInicio = document.getElementById("barbeiro-tarde-inicio");
+  const campoTardeFim = document.getElementById("barbeiro-tarde-fim");
+  const checkboxesDiasTrabalho = Array.from(document.querySelectorAll(".dia-trabalho"));
   const campoFeriasInicio = document.getElementById("barbeiro-ferias-inicio");
   const campoFeriasFim = document.getElementById("barbeiro-ferias-fim");
   const campoSabadoFim = document.getElementById("barbeiro-sabado-fim");
@@ -37,9 +42,14 @@ document.addEventListener("DOMContentLoaded", () => {
       nome: campoNome.value.trim(),
       especialidade: campoEspecialidade.value.trim() || null,
       ativo: campoAtivo.value === "true",
-      sabadoHorarioFim: campoSabadoFim.value
-        ? (campoSabadoFim.value.length === 5 ? `${campoSabadoFim.value}:00` : campoSabadoFim.value)
-        : null,
+      horarioInicioManha: horaCompleta(campoManhaInicio.value),
+      horarioFimManha: horaCompleta(campoManhaFim.value),
+      horarioInicioTarde: horaCompleta(campoTardeInicio.value),
+      horarioFimTarde: horaCompleta(campoTardeFim.value),
+      diasTrabalho: checkboxesDiasTrabalho
+        .filter((caixa) => caixa.checked)
+        .reduce((soma, caixa) => soma + Number(caixa.value), 0),
+      sabadoHorarioFim: horaCompleta(campoSabadoFim.value),
       feriasInicio: campoFeriasInicio.value || null,
       feriasFim: campoFeriasFim.value || null,
     };
@@ -187,6 +197,13 @@ document.addEventListener("DOMContentLoaded", () => {
     campoNome.value = barbeiro.nome;
     campoEspecialidade.value = barbeiro.especialidade || "";
     campoAtivo.value = String(barbeiro.ativo);
+    campoManhaInicio.value = (barbeiro.horarioInicioManha || "").slice(0, 5);
+    campoManhaFim.value = (barbeiro.horarioFimManha || "").slice(0, 5);
+    campoTardeInicio.value = (barbeiro.horarioInicioTarde || "").slice(0, 5);
+    campoTardeFim.value = (barbeiro.horarioFimTarde || "").slice(0, 5);
+    checkboxesDiasTrabalho.forEach((caixa) => {
+      caixa.checked = Boolean(barbeiro.diasTrabalho & Number(caixa.value));
+    });
     campoSabadoFim.value = (barbeiro.sabadoHorarioFim || "").slice(0, 5);
     campoFeriasInicio.value = barbeiro.feriasInicio || "";
     campoFeriasFim.value = barbeiro.feriasFim || "";
@@ -195,6 +212,12 @@ document.addEventListener("DOMContentLoaded", () => {
     campoNome.focus();
   }
 });
+
+/** Completa "HH:mm" (o que o input[type=time] devolve) pra "HH:mm:ss", formato que a API espera. */
+function horaCompleta(valor) {
+  if (!valor) return null;
+  return valor.length === 5 ? `${valor}:00` : valor;
+}
 
 function escaparHtmlLocal(texto) {
   const div = document.createElement("div");

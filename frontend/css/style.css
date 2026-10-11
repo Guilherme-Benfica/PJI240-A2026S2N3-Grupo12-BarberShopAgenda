@@ -187,6 +187,30 @@ textarea::placeholder {
   gap: 1rem;
 }
 
+.grade-dias-trabalho {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.grade-dias-trabalho label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 400;
+  background-color: var(--cor-fundo-elevado);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+
+.grade-dias-trabalho input {
+  width: auto;
+  padding: 0;
+  accent-color: var(--cor-dourado);
+}
+
 button,
 a.botao-primario,
 a.botao-secundario,

@@ -303,6 +303,7 @@ BarberShopAgenda/
 ├── docker-compose.yml               Orquestração API + MySQL
 ├── .github/workflows/
 │   ├── deploy-pages.yml             Publica frontend/ no GitHub Pages a cada push
+│   ├── render-deploy.yml            Dispara deploy da API no Render via Deploy Hook (backup do auto-deploy)
 │   └── keep-alive.yml               Ping em /health a cada ~10 min pra evitar o "sono" do Render
 ├── .dockerignore
 ├── .gitignore
@@ -427,6 +428,8 @@ Configurado em `appsettings.json`/`appsettings.Development.json`:
 - **API:** [Render](https://render.com) (Web Service, camada gratuita, build via `Dockerfile`) — https://pji240-a2026s2n3-grupo12-barbershopagenda.onrender.com
 - **Banco de Dados:** [Aiven](https://aiven.io) (MySQL, camada always-free)
 - **Frontend:** [GitHub Pages](https://pages.github.com) (publicado automaticamente a cada push em `frontend/**` via `.github/workflows/deploy-pages.yml`) — https://guilherme-benfica.github.io/PJI240-A2026S2N3-Grupo12-BarberShopAgenda/
+
+> O deploy da API **não depende da integração nativa GitHub ↔ Render** (que já se mostrou instável, principalmente depois de o repositório ser recriado). `.github/workflows/render-deploy.yml` chama o *Deploy Hook* do serviço a cada push que toque o backend (`BarberShopAgenda.API/**`, `Domain/**`, `Infrastructure/**` ou `Dockerfile`), usando o segredo `RENDER_DEPLOY_HOOK_URL` (configurado em *Settings → Secrets and variables → Actions* do repositório, nunca commitado).
 
 Variáveis de ambiente configuradas no Render (nunca commitadas):
 

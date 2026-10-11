@@ -255,6 +255,15 @@ São 24 testes cobrindo: criação de agendamento válido, conflito de horário 
 | Tela de admin/barbeiro fica "piscando" entre páginas | Sessão de um papel tentando acessar página de outro papel (bug corrigido) | Dê um hard refresh (`Ctrl+Shift+R`) pra garantir que está com os arquivos JS mais recentes |
 | Mudança no frontend não aparece no navegador | Cache do navegador | Hard refresh (`Ctrl+Shift+R`) ou aba anônima |
 | `Muitas tentativas em pouco tempo` (HTTP 429) | Rate limit por IP (10 logins/5 min; 20 escritas públicas/5 min) | Aguarde alguns minutos — é a proteção contra força bruta funcionando |
+| Barbeiro cadastrado não aparece com nenhum horário disponível | A tela de cadastro (`barbeiros.html`) não tem campos de horário de trabalho — `BarbeiroCreateDTO` aceita `horarioInicioManha`/`horarioFimManha`/`horarioInicioTarde`/`horarioFimTarde`, mas o formulário nunca os envia | Defina os horários direto no banco após o cadastro (`UPDATE Barbeiros SET ...`), ou envie-os manualmente via `POST /api/barbeiros`/Swagger. Ainda não há tela pra isso — ver [Limitações conhecidas](#-limitações-conhecidas) |
+| Push no backend não aparece nos Deploys do Render | A integração nativa GitHub ↔ Render não está notificando (já aconteceu depois de recriar o repositório) | Confira se `.github/workflows/render-deploy.yml` rodou em **Actions** no GitHub; se sim, o deploy já foi disparado pelo Deploy Hook independente do GitHub. Se o workflow falhar, confirme que o segredo `RENDER_DEPLOY_HOOK_URL` ainda é válido (ele muda se alguém clicar em "Regenerate hook" no Render) |
+
+---
+
+## ⚠️ Limitações conhecidas
+
+- **Cadastro de barbeiro sem horário pela interface:** o formulário de `barbeiros.html` cria o barbeiro (com conta de login) mas não expõe os campos de horário de trabalho — eles ficam `null` até alguém definir manualmente no banco. Já aconteceu em produção mais de uma vez. O backend já suporta esses campos na criação (`BarbeiroCreateDTO`); falta só a tela.
+- **Texto da especialidade perdido ao editar:** como `BarbeiroUpdateDTO` não inclui horários/dias de trabalho (de propósito — ver comentário no DTO), editar um barbeiro existente nunca apaga essa configuração, mas também significa que não há como ajustá-la depois da criação pela interface.
 
 ---
 
@@ -420,6 +429,7 @@ Configurado em `appsettings.json`/`appsettings.Development.json`:
 | Agendamentos | PUT | `/api/agendamentos/{id}/cancelar` | Admin, Barbeiro (só a própria agenda) |
 | Agendamentos | PUT | `/api/agendamentos/{id}/concluir` | Admin, Barbeiro (só a própria agenda) |
 | Dashboard | GET | `/api/dashboard/hoje` | Admin |
+| Health | GET | `/health` | Público (não consulta o banco — usado só pra manter a instância acordada) |
 
 ---
 

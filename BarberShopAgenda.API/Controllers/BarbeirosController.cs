@@ -15,12 +15,14 @@ public class BarbeirosController : ControllerBase
 {
     private readonly IBarbeiroRepository _barbeiroRepository;
     private readonly IUsuarioRepository _usuarioRepository;
+    private readonly IOutputCacheStore _outputCacheStore;
     private readonly PasswordHasher<Usuario> _passwordHasher = new();
 
-    public BarbeirosController(IBarbeiroRepository barbeiroRepository, IUsuarioRepository usuarioRepository)
+    public BarbeirosController(IBarbeiroRepository barbeiroRepository, IUsuarioRepository usuarioRepository, IOutputCacheStore outputCacheStore)
     {
         _barbeiroRepository = barbeiroRepository;
         _usuarioRepository = usuarioRepository;
+        _outputCacheStore = outputCacheStore;
     }
 
     /// <param name="incluirDadosDeConta">
@@ -120,6 +122,7 @@ public class BarbeirosController : ControllerBase
 
         var criado = await _barbeiroRepository.AddAsync(barbeiro);
         criado.Usuario = usuarioCriado;
+        await _outputCacheStore.EvictByTagAsync("catalogo", default);
         return CreatedAtAction(nameof(GetById), new { id = criado.Id }, ParaResponseDTO(criado, incluirDadosDeConta: true));
     }
 
@@ -148,6 +151,7 @@ public class BarbeirosController : ControllerBase
 
         var atualizado = await _barbeiroRepository.UpdateAsync(barbeiro);
         if (!atualizado) return NotFound(new { mensagem = "Barbeiro não encontrado." });
+        await _outputCacheStore.EvictByTagAsync("catalogo", default);
         return NoContent();
     }
 
@@ -173,6 +177,7 @@ public class BarbeirosController : ControllerBase
 
         barbeiro.Usuario.Ativo = ativo;
         await _usuarioRepository.UpdateAsync(barbeiro.Usuario);
+        await _outputCacheStore.EvictByTagAsync("catalogo", default);
         return NoContent();
     }
 }

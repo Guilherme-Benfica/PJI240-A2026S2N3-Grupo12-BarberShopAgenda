@@ -118,7 +118,7 @@ static string IdentificarChamador(HttpContext contexto) =>
 const string PoliticaCatalogo = "catalogo";
 builder.Services.AddOutputCache(options =>
 {
-    options.AddPolicy(PoliticaCatalogo, policy => policy.Expire(TimeSpan.FromMinutes(1)));
+    options.AddPolicy(PoliticaCatalogo, policy => policy.Expire(TimeSpan.FromMinutes(1)).Tag(PoliticaCatalogo));
 });
 
 var frontendOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()

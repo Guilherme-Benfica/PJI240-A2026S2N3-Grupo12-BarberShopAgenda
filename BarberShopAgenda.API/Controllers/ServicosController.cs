@@ -13,10 +13,12 @@ namespace BarberShopAgenda.API.Controllers;
 public class ServicosController : ControllerBase
 {
     private readonly IServicoRepository _servicoRepository;
+    private readonly IOutputCacheStore _outputCacheStore;
 
-    public ServicosController(IServicoRepository servicoRepository)
+    public ServicosController(IServicoRepository servicoRepository, IOutputCacheStore outputCacheStore)
     {
         _servicoRepository = servicoRepository;
+        _outputCacheStore = outputCacheStore;
     }
 
     private static ServicoResponseDTO ParaResponseDTO(Servico s) => new()
@@ -65,6 +67,7 @@ public class ServicosController : ControllerBase
         };
 
         var criado = await _servicoRepository.AddAsync(servico);
+        await _outputCacheStore.EvictByTagAsync("catalogo", default);
         return CreatedAtAction(nameof(GetById), new { id = criado.Id }, ParaResponseDTO(criado));
     }
 
@@ -86,6 +89,7 @@ public class ServicosController : ControllerBase
 
         var atualizado = await _servicoRepository.UpdateAsync(servico);
         if (!atualizado) return NotFound(new { mensagem = "Serviço não encontrado." });
+        await _outputCacheStore.EvictByTagAsync("catalogo", default);
         return NoContent();
     }
 }

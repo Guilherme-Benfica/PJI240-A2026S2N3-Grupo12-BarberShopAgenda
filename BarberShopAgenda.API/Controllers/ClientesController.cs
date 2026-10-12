@@ -13,10 +13,12 @@ namespace BarberShopAgenda.API.Controllers;
 public class ClientesController : ControllerBase
 {
     private readonly IClienteRepository _clienteRepository;
+    private readonly IUsuarioRepository _usuarioRepository;
 
-    public ClientesController(IClienteRepository clienteRepository)
+    public ClientesController(IClienteRepository clienteRepository, IUsuarioRepository usuarioRepository)
     {
         _clienteRepository = clienteRepository;
+        _usuarioRepository = usuarioRepository;
     }
 
     private static ClienteResponseDTO ParaResponseDTO(Cliente c) => new()
@@ -93,7 +95,10 @@ public class ClientesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = criado.Id }, ParaResponseDTO(criado));
     }
 
-    /// <summary>Atualiza um cliente existente.</summary>
+    /// <summary>
+    /// Atualiza um cliente existente. Se ele tiver conta própria (autocadastro), sincroniza o nome
+    /// nela também — senão o cabeçalho depois do login fica preso no nome de antes da edição.
+    /// </summary>
     [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -110,6 +115,18 @@ public class ClientesController : ControllerBase
 
         var atualizado = await _clienteRepository.UpdateAsync(cliente);
         if (!atualizado) return NotFound(new { mensagem = "Cliente não encontrado." });
+
+        var existente = await _clienteRepository.GetByIdAsync(id);
+        if (existente?.UsuarioId is int usuarioId)
+        {
+            var usuario = await _usuarioRepository.GetByIdAsync(usuarioId);
+            if (usuario is not null && usuario.Nome != dto.Nome)
+            {
+                usuario.Nome = dto.Nome;
+                await _usuarioRepository.UpdateAsync(usuario);
+            }
+        }
+
         return NoContent();
     }
 

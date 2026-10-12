@@ -126,7 +126,11 @@ public class BarbeirosController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = criado.Id }, ParaResponseDTO(criado, incluirDadosDeConta: true));
     }
 
-    /// <summary>Atualiza os dados de agenda de um barbeiro (nome, especialidade, situação, horários, dias de trabalho e férias). Não mexe na conta de login.</summary>
+    /// <summary>
+    /// Atualiza os dados de agenda de um barbeiro (nome, especialidade, situação, horários, dias de trabalho e férias).
+    /// Não mexe em e-mail/senha da conta de login, mas sincroniza o nome — Usuario.Nome é quem aparece no cabeçalho
+    /// depois do login, e antes dessa sincronização ficava preso pra sempre no nome de quando o barbeiro foi criado.
+    /// </summary>
     [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -151,6 +155,14 @@ public class BarbeirosController : ControllerBase
 
         var atualizado = await _barbeiroRepository.UpdateAsync(barbeiro);
         if (!atualizado) return NotFound(new { mensagem = "Barbeiro não encontrado." });
+
+        var comConta = await _barbeiroRepository.GetByIdAsync(id);
+        if (comConta?.Usuario is not null && comConta.Usuario.Nome != dto.Nome)
+        {
+            comConta.Usuario.Nome = dto.Nome;
+            await _usuarioRepository.UpdateAsync(comConta.Usuario);
+        }
+
         await _outputCacheStore.EvictByTagAsync("catalogo", default);
         return NoContent();
     }

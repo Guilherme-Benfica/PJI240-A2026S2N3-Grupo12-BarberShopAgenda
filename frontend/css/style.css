@@ -260,6 +260,22 @@ a.botao-perigo {
   font-size: 0.85rem;
 }
 
+.botao-link {
+  background: none;
+  border: none;
+  color: var(--cor-dourado);
+  padding: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.botao-link:hover {
+  color: var(--cor-dourado-hover);
+  text-decoration: underline;
+}
+
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;

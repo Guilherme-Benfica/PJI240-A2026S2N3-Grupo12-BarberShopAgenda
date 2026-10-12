@@ -12,6 +12,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const campoHora = document.getElementById("agendamento-hora");
   const campoObservacao = document.getElementById("agendamento-observacao");
 
+  const botaoNovoCliente = document.getElementById("botao-novo-cliente");
+  const secaoClienteNovo = document.getElementById("secao-cliente-novo");
+  const campoClienteNovoNome = document.getElementById("cliente-novo-nome");
+  const campoClienteNovoTelefone = document.getElementById("cliente-novo-telefone");
+  const campoClienteNovoEmail = document.getElementById("cliente-novo-email");
+
   const formFiltro = document.getElementById("form-filtro");
   const filtroBarbeiro = document.getElementById("filtro-barbeiro");
   const filtroData = document.getElementById("filtro-data");
@@ -34,31 +40,77 @@ document.addEventListener("DOMContentLoaded", async () => {
   await carregarListasDeApoio();
   await carregarAgendamentos();
 
+  const estaCriandoClienteNovo = () => !secaoClienteNovo.hidden;
+
+  botaoNovoCliente.addEventListener("click", () => {
+    const vaiAbrir = secaoClienteNovo.hidden;
+    secaoClienteNovo.hidden = !vaiAbrir;
+    selectCliente.disabled = vaiAbrir;
+    selectCliente.required = !vaiAbrir;
+    campoClienteNovoNome.required = vaiAbrir;
+    campoClienteNovoTelefone.required = vaiAbrir;
+    botaoNovoCliente.textContent = vaiAbrir ? "Usar cliente já cadastrado" : "+ Novo cliente";
+
+    if (vaiAbrir) {
+      selectCliente.value = "";
+      campoClienteNovoNome.focus();
+    } else {
+      campoClienteNovoNome.value = "";
+      campoClienteNovoTelefone.value = "";
+      campoClienteNovoEmail.value = "";
+    }
+  });
+
   form.addEventListener("submit", async (evento) => {
     evento.preventDefault();
 
-    if (!selectCliente.value || !selectBarbeiro.value || !selectServico.value || !campoData.value || !campoHora.value) {
+    const criandoCliente = estaCriandoClienteNovo();
+    if (criandoCliente && (!campoClienteNovoNome.value.trim() || !campoClienteNovoTelefone.value.trim())) {
+      mostrarFeedback(feedback, "Preencha nome e telefone do cliente novo.", "erro");
+      return;
+    }
+    if (!criandoCliente && !selectCliente.value) {
+      mostrarFeedback(feedback, "Selecione um cliente ou cadastre um novo.", "erro");
+      return;
+    }
+    if (!selectBarbeiro.value || !selectServico.value || !campoData.value || !campoHora.value) {
       mostrarFeedback(feedback, "Preencha todos os campos obrigatórios.", "erro");
       return;
     }
 
     const dataHora = `${campoData.value}T${campoHora.value}:00`;
-
-    const dados = {
-      clienteId: parseInt(selectCliente.value, 10),
-      barbeiroId: parseInt(selectBarbeiro.value, 10),
-      servicoId: parseInt(selectServico.value, 10),
-      dataHora,
-      observacao: campoObservacao.value.trim() || null,
-    };
-
     const botaoSalvar = form.querySelector("button[type=submit]");
     botaoSalvar.disabled = true;
 
     try {
-      await api.agendamentos.criar(dados);
+      let clienteId = parseInt(selectCliente.value, 10);
+
+      if (criandoCliente) {
+        const cliente = await api.clientes.criar({
+          nome: campoClienteNovoNome.value.trim(),
+          telefone: campoClienteNovoTelefone.value.trim(),
+          email: campoClienteNovoEmail.value.trim() || null,
+        });
+        clienteId = cliente.id;
+      }
+
+      await api.agendamentos.criar({
+        clienteId,
+        barbeiroId: parseInt(selectBarbeiro.value, 10),
+        servicoId: parseInt(selectServico.value, 10),
+        dataHora,
+        observacao: campoObservacao.value.trim() || null,
+      });
+
       mostrarFeedback(feedback, "Agendamento criado com sucesso.");
       form.reset();
+      secaoClienteNovo.hidden = true;
+      selectCliente.disabled = false;
+      selectCliente.required = true;
+      botaoNovoCliente.textContent = "+ Novo cliente";
+      if (criandoCliente) {
+        await carregarListasDeApoio();
+      }
       await carregarAgendamentos();
     } catch (erro) {
       mostrarFeedback(feedback, erro.message || "Não foi possível criar o agendamento.", "erro");

@@ -28,8 +28,8 @@ public class ClientesController : ControllerBase
         DataCadastro = c.DataCadastro
     };
 
-    /// <summary>Lista todos os clientes.</summary>
-    [Authorize(Roles = "Admin")]
+    /// <summary>Lista todos os clientes. Barbeiro também acessa — precisa pra agendar pelo cliente na tela de Agendamentos.</summary>
+    [Authorize(Roles = "Admin,Barbeiro")]
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ClienteResponseDTO>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<ClienteResponseDTO>>> GetAll()

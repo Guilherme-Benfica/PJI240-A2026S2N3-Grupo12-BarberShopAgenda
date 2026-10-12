@@ -4,10 +4,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const ehBarbeiro = auth.papel === "Barbeiro";
 
-  if (ehBarbeiro) {
-    document.getElementById("secao-novo-agendamento").hidden = true;
-  }
-
   const form = document.getElementById("form-agendamento");
   const selectCliente = document.getElementById("agendamento-cliente");
   const selectBarbeiro = document.getElementById("agendamento-barbeiro");
@@ -76,24 +72,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function carregarListasDeApoio() {
     try {
       const [clientes, barbeiros, servicos] = await Promise.all([
-        ehBarbeiro ? Promise.resolve([]) : api.clientes.listar(),
+        api.clientes.listar(),
         ehBarbeiro ? api.barbeiros.listar() : api.barbeiros.listarTodos(),
         api.servicos.listar(),
       ]);
 
-      if (!ehBarbeiro) {
-        preencherSelect(selectCliente, clientes, (c) => c.nome);
-        preencherSelect(selectBarbeiro, barbeiros.filter((b) => b.ativo && b.contaAtiva !== false), (b) => b.nome);
-        preencherSelect(selectServico, servicos, (s) => `${s.nome} — ${formatarMoeda(s.preco)}`);
-      }
+      preencherSelect(selectCliente, clientes, (c) => `${c.nome} — ${c.telefone}`);
+      preencherSelect(selectServico, servicos, (s) => `${s.nome} — ${formatarMoeda(s.preco)}`);
 
       if (ehBarbeiro) {
-        filtroBarbeiro.innerHTML = `<option value="${auth.barbeiroId}">${escaparHtmlAgendamento(
-          barbeiros.find((b) => String(b.id) === String(auth.barbeiroId))?.nome || "Minha agenda"
-        )}</option>`;
+        // O barbeiro só agenda/filtra na própria agenda — os dois campos ficam travados nele mesmo.
+        const proprioNome = barbeiros.find((b) => String(b.id) === String(auth.barbeiroId))?.nome || "Minha agenda";
+        const opcaoPropria = `<option value="${auth.barbeiroId}">${escaparHtmlAgendamento(proprioNome)}</option>`;
+
+        selectBarbeiro.innerHTML = opcaoPropria;
+        selectBarbeiro.value = String(auth.barbeiroId);
+        selectBarbeiro.disabled = true;
+
+        filtroBarbeiro.innerHTML = opcaoPropria;
         filtroBarbeiro.value = String(auth.barbeiroId);
         filtroBarbeiro.disabled = true;
       } else {
+        preencherSelect(selectBarbeiro, barbeiros.filter((b) => b.ativo && b.contaAtiva !== false), (b) => b.nome);
         preencherSelect(filtroBarbeiro, barbeiros, (b) => b.nome, false);
       }
     } catch (erro) {

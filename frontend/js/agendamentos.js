@@ -15,10 +15,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   const formFiltro = document.getElementById("form-filtro");
   const filtroBarbeiro = document.getElementById("filtro-barbeiro");
   const filtroData = document.getElementById("filtro-data");
+  const botaoFiltroHoje = document.getElementById("botao-filtro-hoje");
   const botaoLimparFiltro = document.getElementById("botao-limpar-filtro");
 
   const feedback = document.getElementById("feedback");
   const listaAgendamentos = document.getElementById("lista-agendamentos");
+
+  const resumoTotal = document.getElementById("resumo-total");
+  const resumoPendentes = document.getElementById("resumo-pendentes");
+  const resumoConfirmados = document.getElementById("resumo-confirmados");
+  const resumoConcluidos = document.getElementById("resumo-concluidos");
+  const resumoCancelados = document.getElementById("resumo-cancelados");
+
+  // Abre a tela já na agenda de hoje — é o que admin e barbeiro mais olham no dia a dia.
+  // "Ver todos" limpa pra enxergar o histórico completo.
+  filtroData.value = formatarDataParaApi(new Date());
 
   await carregarListasDeApoio();
   await carregarAgendamentos();
@@ -58,6 +69,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   formFiltro.addEventListener("submit", async (evento) => {
     evento.preventDefault();
+    await carregarAgendamentos();
+  });
+
+  botaoFiltroHoje.addEventListener("click", async () => {
+    filtroData.value = formatarDataParaApi(new Date());
     await carregarAgendamentos();
   });
 
@@ -126,11 +142,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         agendamentos = agendamentos.filter((a) => a.dataHora.startsWith(filtroData.value));
       }
 
+      renderizarResumo(agendamentos);
       renderizarAgendamentos(agendamentos);
     } catch (erro) {
       listaAgendamentos.innerHTML = "<p>Não foi possível carregar os agendamentos.</p>";
       mostrarFeedback(feedback, erro.message || "Erro ao carregar agendamentos.", "erro");
     }
+  }
+
+  function renderizarResumo(agendamentos) {
+    const contagem = { Pendente: 0, Confirmado: 0, Concluido: 0, Cancelado: 0 };
+    agendamentos.forEach((a) => {
+      if (a.status in contagem) contagem[a.status]++;
+    });
+
+    resumoTotal.textContent = agendamentos.length;
+    resumoPendentes.textContent = contagem.Pendente;
+    resumoConfirmados.textContent = contagem.Confirmado;
+    resumoConcluidos.textContent = contagem.Concluido;
+    resumoCancelados.textContent = contagem.Cancelado;
   }
 
   function renderizarAgendamentos(agendamentos) {

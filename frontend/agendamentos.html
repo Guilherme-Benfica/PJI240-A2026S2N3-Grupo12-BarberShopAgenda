@@ -24,6 +24,29 @@
     <h1>Agendamentos</h1>
     <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
 
+    <section class="grade-resumo" aria-label="Resumo da agenda filtrada">
+      <div class="cartao-metrica">
+        <div class="valor" id="resumo-total">–</div>
+        <div class="rotulo">Total</div>
+      </div>
+      <div class="cartao-metrica">
+        <div class="valor" id="resumo-pendentes">–</div>
+        <div class="rotulo">Pendentes</div>
+      </div>
+      <div class="cartao-metrica">
+        <div class="valor" id="resumo-confirmados">–</div>
+        <div class="rotulo">Confirmados</div>
+      </div>
+      <div class="cartao-metrica">
+        <div class="valor" id="resumo-concluidos">–</div>
+        <div class="rotulo">Concluídos</div>
+      </div>
+      <div class="cartao-metrica">
+        <div class="valor" id="resumo-cancelados">–</div>
+        <div class="rotulo">Cancelados</div>
+      </div>
+    </section>
+
     <section class="cartao" id="secao-novo-agendamento" aria-labelledby="titulo-novo-agendamento">
       <h2 id="titulo-novo-agendamento">Novo agendamento</h2>
       <form id="form-agendamento" novalidate>
@@ -84,7 +107,8 @@
         </div>
         <div class="acoes-tabela">
           <button type="submit" class="botao-primario">Filtrar</button>
-          <button type="button" id="botao-limpar-filtro" class="botao-secundario">Limpar filtro</button>
+          <button type="button" id="botao-filtro-hoje" class="botao-secundario">Hoje</button>
+          <button type="button" id="botao-limpar-filtro" class="botao-secundario">Ver todos</button>
         </div>
       </form>
     </section>

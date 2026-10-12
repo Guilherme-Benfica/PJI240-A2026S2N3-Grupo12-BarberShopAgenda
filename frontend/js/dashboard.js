@@ -24,13 +24,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-function formatarDataParaApi(data) {
-  const ano = data.getFullYear();
-  const mes = String(data.getMonth() + 1).padStart(2, "0");
-  const dia = String(data.getDate()).padStart(2, "0");
-  return `${ano}-${mes}-${dia}`;
-}
-
 function renderizarAgenda(agendamentos, container) {
   if (!agendamentos.length) {
     container.innerHTML = "<p>Nenhum agendamento para hoje.</p>";

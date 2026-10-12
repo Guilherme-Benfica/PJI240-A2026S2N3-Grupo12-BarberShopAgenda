@@ -121,6 +121,13 @@ function formatarDataHora(dataHoraISO) {
   return data.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
 }
 
+function formatarDataParaApi(data) {
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  const dia = String(data.getDate()).padStart(2, "0");
+  return `${ano}-${mes}-${dia}`;
+}
+
 const STATUS_LABEL = {
   Pendente: "Pendente",
   Confirmado: "Confirmado",

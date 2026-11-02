@@ -319,16 +319,9 @@ A API usa **JWT**, com 3 papéis: `Admin`, `Barbeiro` e `Cliente`. O token é ob
 
 ### Contas padrão (seed)
 
-`schema.sql` e as migrations já criam os usuários abaixo. **Troque essas senhas antes de qualquer uso além de desenvolvimento local.**
+`schema.sql` e as migrations já criam contas de exemplo (Admin e alguns Barbeiros) com senha inicial conhecida, pensadas só pra rodar o projeto localmente. **As senhas não ficam neste README** — quem for rodar o projeto do zero localmente encontra os e-mails e os hashes em `database/schema.sql`.
 
-| Papel | E-mail | Senha padrão |
-|---|---|---|
-| Admin | `admin@barbershop.com` | `Admin@123` |
-| Barbeiro (Carlos Silva) | `carlos.silva@barbershop.com` | `Barbeiro@123` |
-| Barbeiro (João Pereira) | `joao.pereira@barbershop.com` | `Barbeiro@123` |
-| Barbeiro (Marcos Souza) | `marcos.souza@barbershop.com` | `Barbeiro@123` |
-
-Qualquer usuário autenticado pode trocar a própria senha em `PUT /api/auth/senha` (tela `trocar-senha.html`).
+Qualquer usuário autenticado pode trocar a própria senha em `PUT /api/auth/senha` (tela `trocar-senha.html`) — recomendado logo no primeiro login de uma conta de exemplo.
 
 ### Conta de cliente (opcional)
 
